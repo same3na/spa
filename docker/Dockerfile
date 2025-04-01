@@ -9,7 +9,7 @@ RUN npm ci
 # Copy the project files into the working directory
 COPY ./ ./
 
-ENV VITE_API_BASE_URL='http://backend-app:8000'
+ENV VITE_API_BASE_URL='/api'
 
 # Build the React app for production
 RUN npm run build
