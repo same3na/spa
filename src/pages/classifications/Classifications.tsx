@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 export default function Classifications() {
   const navigate = useNavigate();
  
-  const fetchClassifications = async (page: number, search: string, limit: number) => {
+  const fetchClassifications = async (_page: number, _search: string, _limit: number) => {
     const data = await getClassificationsApi()
     return { data: data, total: 10 };
   }
@@ -21,7 +21,7 @@ export default function Classifications() {
           { key: "custom", label: "Name", render: (row: Classification) => (
             <div className="cursor-pointer" onClick={() => {navigate(`/song-criterias/${row.id}`)}}>{row.slug}</div>
           )},
-          { key: "custom", label: "Action", render: (row: Classification) => (
+          { key: "custom", label: "Action", render: (_row: Classification) => (
             <button 
               // onClick={(e) => navigate(`/classifications/${playlist.id}/playlist/create`)} 
               className="px-3 py-1 text-xsm rounded cursor-pointer mx-2 transition-all hover:bg-gray-600"

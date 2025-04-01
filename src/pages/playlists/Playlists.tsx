@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 export default function Playlists() {
   const navigate = useNavigate();
 
-  const fetchPlaylists = async(page: number, search: string, limit: number) => {
+  const fetchPlaylists = async(_page: number, _search: string, _limit: number) => {
     const data = await getPlaylists()
 
     return { data: data, total: 10 };
@@ -26,7 +26,7 @@ export default function Playlists() {
             <span>{row.artists && row.artists.map((artist: Artist) => ( artist.name + ", " ))}</span>
           )},
           { key: "has_all_songs", label: "Has All Songs" },
-          { key: "custom", label: "Action", render: (row: Playlist) => (
+          { key: "custom", label: "Action", render: (_row: Playlist) => (
             <button 
               // onClick={(e) => navigate(`/classifications/${playlist.id}/playlist/create`)} 
               className="px-3 py-1 text-xsm rounded cursor-pointer mx-2 transition-all hover:bg-gray-600"

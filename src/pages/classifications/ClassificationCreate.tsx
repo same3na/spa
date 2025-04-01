@@ -25,7 +25,7 @@ export default function ClassificationCreate() {
   const [isAllSongs, setIsAllSongs] = useState<boolean>(false)
   const [artistList, setArtists] = useState<Artist[]>([])
   const [playlistArtists, setPlatlistArtists] = useState<any[]>([])
-  const [previewSongIds, setPreviewSongIds] = useState<string[]>([])
+  const [previewSongIds] = useState<string[]>([])
   const [playlistMaxNb, setPlaylistMaxNb] = useState<number>(50)
 
   const [playlistSongIds, setPlaylistSongIds] = useState<string[]>([])

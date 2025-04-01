@@ -1,6 +1,7 @@
 import SongSingle from '@/pages/songs/Single';
 import {apiClient} from './index';
 import { PagingResponse } from './paging';
+import { SongFilter } from '@/components/FilterSongsComponent';
 
 export interface Artist {
   id: string
@@ -23,7 +24,7 @@ export interface Song {
 
 export interface SongSingle extends Song{
   features: {
-    genres: {
+    genre: {
       name: string
       value: number
     }[],
@@ -32,23 +33,22 @@ export interface SongSingle extends Song{
     happy: number,
     relaxed: number,
     sad: number,
-    moods: {
+    mood: {
       name: string
       value: number
     }[],
   }
 }
 
-export const getSongs = async (data: {page: number, limit: number, search: string | null, ids?: Array<string>, artistIds?: Array<string>}): Promise<PagingResponse<Song>> => {
+export const getSongs = async (data: {page: number, limit: number, search: string | null, ids?: Array<string>, artistIds?: Array<string>, featureFilter?: Array<SongFilter>}): Promise<PagingResponse<Song>> => {
   try {
     let params: {
       page: number
       limit: number
       search: string | null
       ids?: Array<string>
-      filter?: {
-        [key: string]: string[];
-      };
+      artists_ids?: Array<string>
+      feature_filter?: Array<SongFilter>;
     } = {
       page: data.page, 
       limit: data.limit, 
@@ -60,9 +60,11 @@ export const getSongs = async (data: {page: number, limit: number, search: strin
     }
 
     if (data.artistIds && data.artistIds.length > 0) {
-      params.filter = {
-        'artists': data.artistIds
-      }
+      params.artists_ids = data.artistIds
+    }
+
+    if (data.featureFilter && data.featureFilter.length > 0) {
+      params.feature_filter = data.featureFilter
     }
 
     const response = await apiClient.post<PagingResponse<Song>>('/query-songs', params);

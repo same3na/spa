@@ -1,7 +1,9 @@
 import { Artist } from "@/api/search";
 import { getPlaylist, getSongs, getSongsArtist, Song } from "@/api/songs";
+import FilterSongsComponent from "@/components/FilterSongsComponent";
 import Table from "@/components/table/TableComponent";
 import TableFilter from "@/components/table/TableFilterComponent";
+import {SongFilter} from "@/components/FilterSongsComponent";
 import { usePlayer } from "@/context/PlayerContext";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +13,7 @@ export default function Home() {
   const { setSong, setPlaylist } = usePlayer();
   const [artists, setArtists] = useState<string[]>([])
   const [filters, setFilters] = useState<Array<React.ReactNode>>([])
+  const [featureFilters, setFeatureFilters] = useState<SongFilter[]>([])
 
   const navigate = useNavigate();
 
@@ -30,10 +33,10 @@ export default function Home() {
   
   const fetchSongs = useCallback(async (page: number, search: string, limit: number) => {
 
-    const data:any = await getSongs({page, limit, search, artistIds: artists})
+    const data:any = await getSongs({page, limit, search, artistIds: artists, featureFilter: featureFilters})
 
     return { data: data.data, total: data.total };
-  }, [artists]);
+  }, [artists, featureFilters]);
 
   const fetchPlaylist = useCallback(async(song_id: string, artist_ids: string[]) => {
     const data = await getPlaylist({ song_id, artist_ids })
@@ -45,6 +48,10 @@ export default function Home() {
     fetchPlaylist(song.id, artists)
   }
 
+  const onFilterChange = (filters:SongFilter[]) => {
+    setFeatureFilters(filters)
+  }
+
   useEffect(() => {
     constructFilters()
   }, []); // Empty dependency array ensures it runs only once on mount
@@ -52,6 +59,9 @@ export default function Home() {
 
   return (
     <div className="">
+      <FilterSongsComponent 
+        onFilterChange={onFilterChange}
+      />
       <Table<Song>
         columns={[
           { key: "id", label: "ID" },

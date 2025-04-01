@@ -65,7 +65,7 @@ export default function SongSingle() {
             <ResponsiveContainer width="100%" height={400}>
               <PieChart>
                 <Pie
-                  data={song.features.genres}
+                  data={song.features.genre}
                   dataKey="value"
                   nameKey="name"
                   cx="50%"  // Centering the pie chart
@@ -73,7 +73,7 @@ export default function SongSingle() {
                   outerRadius={150}  // Pie radius
                   label={(entry) => entry.name} //
                 >
-                  {song.features.genres.map((entry:any, index:any) => (
+                  {song.features.genre.map((_entry:any, index:any) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -147,7 +147,7 @@ export default function SongSingle() {
             <ResponsiveContainer width="100%" height={400}>
               <PieChart>
                 <Pie
-                  data={song.features.moods}
+                  data={song.features.mood}
                   dataKey="value"
                   nameKey="name"
                   cx="50%"  // Centering the pie chart
@@ -155,7 +155,7 @@ export default function SongSingle() {
                   outerRadius={150}  // Pie radius
                   label={(entry) => entry.name} //
                 >
-                  {song.features.moods.map((entry:any, index:any) => (
+                  {song.features.mood.map((_entry:any, index:any) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>

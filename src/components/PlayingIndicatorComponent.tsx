@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 const PlayingIndicator = ({ isPlaying }: {isPlaying:boolean}) => {
   return (
     <div className="flex gap-1">
-      {[1, 2, 3, 4].map((bar, index) => (
+      {[1, 2, 3, 4].map((_bar, index) => (
         <motion.span
           key={index}
           className="w-1 h-4 bg-green-500 rounded"

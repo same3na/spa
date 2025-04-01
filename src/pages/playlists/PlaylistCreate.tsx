@@ -3,7 +3,7 @@ import { Artist, getPlaylist, getSongs, getSongsArtist, Song } from "@/api/songs
 import MultipleSelect from "@/components/form/MultipleSelectComponent";
 import Table from "@/components/table/TableComponent";
 import { usePlayer } from "@/context/PlayerContext";
-import { Plus, Weight } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -19,7 +19,7 @@ export default function PlaylistCreate() {
   const [playlistClassifications, setPlaylistClassifications] = useState<any[]>([])
   const [isAllSongs, setIsAllSongs] = useState<boolean>(false)
   const [artistList, setArtists] = useState<Artist[]>([])
-  const [artistIds, setArtistIds] = useState<string[]>([])
+  const [_artistIds, setArtistIds] = useState<string[]>([])
   const [playlistSongIds, setPlaylistSongsIds] = useState<string[]>([])
 
   const getClassifications = async () => {

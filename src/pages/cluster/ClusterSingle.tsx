@@ -176,7 +176,7 @@ export default function ClusterSingle(){
   return (
     <div className="grid grid-cols-2 p-4 pt-10">
 
-      {songsIdsPerCluster.map((songs:string[], outerIndex:number) => (
+      {songsIdsPerCluster.map((_songs:string[], outerIndex:number) => (
         <div className="p-4" key={outerIndex}>
           <Table<Song>
             columns={[
