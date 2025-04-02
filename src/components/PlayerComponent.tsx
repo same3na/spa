@@ -185,7 +185,7 @@ const Player = () => {
   
           {/* Audio Element */}
           <YouTube 
-            className="hidden"
+            // className="hidden"
             videoId={extractVideoId(song)} 
             opts={opts} 
             onReady={onPlayerReady} 
