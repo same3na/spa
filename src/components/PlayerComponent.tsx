@@ -48,6 +48,7 @@ const Player = () => {
   }
 
   const onPlayerReady = (event: any) => {
+    console.log("onPlayerReady:", event.target)
     playerRef.current = event.target;
     setDuration(event.target.getDuration());
     event.target.playVideo();
