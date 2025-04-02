@@ -83,7 +83,9 @@ const Player = () => {
   };
 
   const onStateChange = (event:any) => {
+    console.log(event)
     if (event.data === 1) {
+      console.log("play video")
       setIsPlaying(true); // Video is playing
     } else if (event.data === 2 || event.data === 0) {
       setIsPlaying(false); // Video paused or ended

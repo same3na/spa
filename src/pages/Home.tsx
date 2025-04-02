@@ -7,8 +7,6 @@ import {SongFilter} from "@/components/FilterSongsComponent";
 import { usePlayer } from "@/context/PlayerContext";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import YouTube from "react-youtube";
-
 
 
 export default function Home() {
@@ -61,11 +59,6 @@ export default function Home() {
 
   return (
     <div className="">
-      {/* Audio Element */}
-      <YouTube 
-        videoId="YC7faDixT9A"
-      />
-
       <FilterSongsComponent 
         onFilterChange={onFilterChange}
       />
