@@ -1,5 +1,5 @@
 "use client"; 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import YouTube from "react-youtube";
 import { usePlayer } from "@/context/PlayerContext";
 import { Song } from "@/api/songs";
@@ -48,7 +48,6 @@ const Player = () => {
   }
 
   const onPlayerReady = (event: any) => {
-    console.log("onPlayerReady:", event.target)
     playerRef.current = event.target;
     setDuration(event.target.getDuration());
     event.target.playVideo();
@@ -92,12 +91,10 @@ const Player = () => {
   };
 
   const togglePlay = () => {
-    console.log(playerRef.current)
     if (!playerRef.current) return;
     if (isPlaying) {
       playerRef.current.pauseVideo();
     } else {
-      console.log("Play video")
       playerRef.current.playVideo();
     }
   };
@@ -113,11 +110,6 @@ const Player = () => {
     playerRef.current.seekTo(seekTime, true); // Seek in video
   };
 
-  useEffect(() => {
-    if (playerRef.current && song) {
-      console.log("Playing song:", song);
-    }
-  }, [song]);
 
   // useEffect(() => {
   //   if (!playerRef.current) return
@@ -185,7 +177,7 @@ const Player = () => {
   
           {/* Audio Element */}
           <YouTube 
-            // className="hidden"
+            className="hidden"
             videoId={extractVideoId(song)} 
             opts={opts} 
             onReady={onPlayerReady} 
