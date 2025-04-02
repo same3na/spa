@@ -84,9 +84,7 @@ const Player = () => {
   };
 
   const onStateChange = (event:any) => {
-    console.log(event)
     if (event.data === 1) {
-      console.log("play video")
       setIsPlaying(true); // Video is playing
     } else if (event.data === 2 || event.data === 0) {
       setIsPlaying(false); // Video paused or ended
@@ -94,10 +92,12 @@ const Player = () => {
   };
 
   const togglePlay = () => {
+    console.log(playerRef.current)
     if (!playerRef.current) return;
     if (isPlaying) {
       playerRef.current.pauseVideo();
     } else {
+      console.log("Play video")
       playerRef.current.playVideo();
     }
   };
