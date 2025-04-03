@@ -1,4 +1,3 @@
-"use client"; 
 import { useRef, useState } from "react";
 import YouTube from "react-youtube";
 import { usePlayer } from "@/context/PlayerContext";

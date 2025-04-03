@@ -39,7 +39,8 @@ export default function Home() {
   }, [artists, featureFilters]);
 
   const fetchPlaylist = useCallback(async(song_id: string, artist_ids: string[]) => {
-    const data = await getPlaylist({ song_id, artist_ids })
+    console.log(featureFilters)
+    const data = await getPlaylist({ song_id, artist_ids, feature_filter: featureFilters })
     setPlaylist(data)
   }, [])
 

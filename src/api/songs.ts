@@ -77,7 +77,7 @@ export const getSongs = async (data: {page: number, limit: number, search: strin
   }
 };
 
-export const getPlaylist = async (data: {song_id: string, artist_ids?: string[], in_song_ids?: string[]}): Promise<Song[]> => {
+export const getPlaylist = async (data: {song_id: string, artist_ids?: string[], in_song_ids?: string[], feature_filter?: Array<SongFilter>}): Promise<Song[]> => {
   try {
     const response = await apiClient.post<Song[]>('/playlist', data);
 
