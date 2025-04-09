@@ -20,6 +20,7 @@ import Classifications from './pages/classifications/Classifications'
 import ClassificationCreate from './pages/classifications/ClassificationCreate'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Login from './pages/auth/Login'
+import ErrorMessage from './components/ErrorMessage'
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -34,6 +35,7 @@ function App() {
         <AuthProvider>
           <PlayerProvider>
             <SiteMenu />
+            <ErrorMessage />
             <div className='p-4'>
               <Routes>
                 <Route path="/login" element={<Login />} />

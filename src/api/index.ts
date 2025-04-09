@@ -18,16 +18,29 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      // Remove token
-      localStorage.removeItem('token');
-    }
+// apiClient.interceptors.response.use(
+//   (response) => response,
+//   (error) => {
+//     if (error.response && error.response.status === 401) {
+//       // Remove token
+//       localStorage.removeItem('token');
+//     }
 
-    return Promise.reject(error);
-  }
-);
+//     return Promise.reject(error);
+//   }
+// );
+
+// Custom hook to setup interceptors
+export const setupInterceptors = (setError: (msg: string) => void, setErrorStatus: (status:number) => void) => {
+  apiClient.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      setErrorStatus(error.response.status)
+      const msg = error.response?.data?.message || "Something went wrong";
+      setError(msg);
+      return Promise.reject(error);
+    }
+  );
+};
 
 export default apiClient
