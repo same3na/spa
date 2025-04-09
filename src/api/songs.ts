@@ -1,5 +1,5 @@
 import SongSingle from '@/pages/songs/Single';
-import {apiClient} from './index';
+import apiClient from './index';
 import { PagingResponse } from './paging';
 import { SongFilter } from '@/components/FilterSongsComponent';
 

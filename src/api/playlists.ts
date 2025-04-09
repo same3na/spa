@@ -1,4 +1,4 @@
-import {apiClient} from './index';
+import apiClient from './index';
 import { Artist } from './songs';
 
 
@@ -27,7 +27,7 @@ export interface Classification {
 
 export const getClassifications = async () => {
   try {
-    const response = await apiClient.get<Classification[]>('/classifications');
+    const response = await apiClient.get<Classification[]>('/me/classifications');
     return response.data;
   } catch (error) {
     throw error;
@@ -36,7 +36,7 @@ export const getClassifications = async () => {
 
 export const getPlaylists = async () => {
   try {
-    const response = await apiClient.get<Playlist[]>('/playlists');
+    const response = await apiClient.get<Playlist[]>('/me/playlists');
     return response.data;
   } catch (error) {
     throw error;
@@ -45,7 +45,7 @@ export const getPlaylists = async () => {
 
 export const getPlaylistSongIds = async (data: {has_all_songs: boolean, song_ids:string[], criterias:any[], playlist_max_nb:number}) => {
   try {
-    const response = await apiClient.post<string[]>('/filter-songs-by-classification', data);
+    const response = await apiClient.post<string[]>('/me/filter-songs-by-classification', data);
     return response.data;
   } catch (error) {
     throw error;

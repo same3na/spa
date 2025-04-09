@@ -1,4 +1,4 @@
-import {apiClient} from './index';
+import apiClient from './index';
 
 export interface Artist {
   id: string
@@ -42,7 +42,7 @@ export interface Search {
 
 export const getSearch = async () => {
   try {
-    const response = await apiClient.get<Search[]>('/search');
+    const response = await apiClient.get<Search[]>('/me/search');
     return response.data;
   } catch (error) {
     throw error
@@ -51,7 +51,7 @@ export const getSearch = async () => {
 
 export const createArtistSearch = async (data: {artist_id: string, artist_name: string}) => {
   try {
-    await apiClient.post('/search', data)
+    await apiClient.post('/me/search', data)
   } catch (error) {
     throw error
   }
@@ -59,7 +59,7 @@ export const createArtistSearch = async (data: {artist_id: string, artist_name: 
 
 export const getArtists = async (data :{name: string}) => {
   try {
-    const response = await apiClient.get<Artist[]>('/search/artists', {params: data});
+    const response = await apiClient.get<Artist[]>('/me/search/artists', {params: data});
     return response.data;
   } catch (error) {
     throw error;
@@ -68,7 +68,7 @@ export const getArtists = async (data :{name: string}) => {
 
 export const queryArtistSongs = async (data:{id: string}) => {
   try {
-    const response = await apiClient.get<SearchSongsByAlbums[]>(`/search/artist-songs/${data.id}`)
+    const response = await apiClient.get<SearchSongsByAlbums[]>(`/me/search/artist-songs/${data.id}`)
     return response.data
   } catch (error) {
     throw error
@@ -77,7 +77,7 @@ export const queryArtistSongs = async (data:{id: string}) => {
 
 export const addSongs = async (data:{artist_id: string, song_ids: string[]}) => {
   try {
-    await apiClient.post(`/search/artist-songs/${data.artist_id}`, data)
+    await apiClient.post(`/me/search/artist-songs/${data.artist_id}`, data)
   } catch (error) {
     throw error
   }
