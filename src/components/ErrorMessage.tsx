@@ -1,9 +1,11 @@
 import { setupInterceptors } from "@/api";
+import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 
 export default function ErrorMessage() {
+  const {logout} = useAuth()
   const [message, setMessage] = useState<string>("")
   const [statusCode, setStatusCode] = useState<number>()
   
@@ -15,7 +17,7 @@ export default function ErrorMessage() {
 
   useEffect(() => {
     if (statusCode === 401) {
-      localStorage.removeItem('token')
+      logout()
       navigate('/login')
     }
   }, [statusCode])
