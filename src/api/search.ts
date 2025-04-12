@@ -31,12 +31,18 @@ export interface Album {
 }
 
 export interface Search {
-  artist_id: String
-  artist_name: String
-  succeeded: boolean
-  error_message: string
-  total: number
-  current_album_nb: number
+  id: string
+  artist_reference: string
+  artist_name: string
+  search_succeeded: {
+    Bool: boolean, 
+    Valid: boolean
+  }
+  download_succeeded: {
+    Bool: boolean, 
+    Valid: boolean
+  }
+  total_songs: number
   created_at: string
 }
 
@@ -75,7 +81,7 @@ export const queryArtistSongs = async (data:{id: string}) => {
   }
 }
 
-export const addSongs = async (data:{artist_id: string, song_ids: string[]}) => {
+export const addSongs = async (data:{artist_id: string, song_ids?: string[]}) => {
   try {
     await apiClient.post(`/me/search/artist-songs/${data.artist_id}`, data)
   } catch (error) {

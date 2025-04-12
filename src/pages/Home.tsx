@@ -7,6 +7,8 @@ import {SongFilter} from "@/components/FilterSongsComponent";
 import { usePlayer } from "@/context/PlayerContext";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import TableBtn from "@/components/table/TableBtnComponent";
+import ModalComponent from "@/components/ModalComponent";
 
 
 export default function Home() {
@@ -14,6 +16,7 @@ export default function Home() {
   const [artists, setArtists] = useState<string[]>([])
   const [filters, setFilters] = useState<Array<React.ReactNode>>([])
   const [featureFilters, setFeatureFilters] = useState<SongFilter[]>([])
+  const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false)
 
   const navigate = useNavigate();
 
@@ -59,9 +62,14 @@ export default function Home() {
 
   return (
     <div className="">
-      <FilterSongsComponent 
-        onFilterChange={onFilterChange}
-      />
+      <ModalComponent 
+        isOpen={filterModalOpen} 
+        onClose={() => setFilterModalOpen(false)} 
+        contents={
+          <FilterSongsComponent 
+            onFilterChange={onFilterChange}
+          />
+        } />
       <Table<Song>
         columns={[
           { key: "id", label: "ID" },
@@ -91,6 +99,18 @@ export default function Home() {
         ]}
         fetchData={fetchSongs}
         tableFilters={filters}
+        tableBtns={[
+          <TableBtn 
+            label={"Manage Songs"} 
+            btnClass={"bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow"} 
+            onButtonClick={() => navigate('/search')} />,
+
+          <TableBtn 
+            label={"Filter"} 
+            btnClass={"bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow"} 
+            onButtonClick={() => setFilterModalOpen(true)} />
+
+        ]}
       />
     </div>
   );

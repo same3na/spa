@@ -5,8 +5,8 @@ import { Link, useLocation } from "react-router-dom";
 
 const navigation = [
   { name: 'All Songs', href: '/' },
-  { name: 'Prev Search', href: '/search' },
-  { name: 'Search By Artist', href: '/search/artists' },
+  // { name: 'Add Songs', href: '/search' },
+  // { name: 'Search By Artist', href: '/search/artists' },
   // { name: 'Clusters', href: '/clusters' },
   // { name: 'Playlists', href: '/playlists' },
 ]

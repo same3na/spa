@@ -22,6 +22,11 @@ export interface Song {
   }
 }
 
+export interface SongFilters {
+  moods: string[]
+  genres: string[]
+}
+
 export interface SongSingle extends Song{
   features: {
     genre: {
@@ -98,6 +103,12 @@ export const getSongsArtist = async (): Promise<Artist[]> => {
     console.error('Error fetching users:', error);
     throw error;
   }
+}
+
+export const getFilters = async (): Promise<SongFilters> => {
+  const response = await apiClient.get<SongFilters>(`/songs-filters`)
+
+  return response.data
 }
 
 export const getSongIdsByArtists = async (data: {artist_ids: string[]}): Promise<string[]> => {

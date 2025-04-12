@@ -66,18 +66,18 @@ const Table = <T,>({ columns, fetchData, additionalData, tableFilters, tableBtns
 
         <div className="flex my-4">
           {tableBtns && tableBtns.map((Button, index) => (
-            <div key={index}>
+            <div className="px-1" key={index}>
               {Button}
             </div>
           ))}
 
           {tableFilters && tableFilters.map((Filter, index) => (
-            <div key={index}>
+            <div className="px-1" key={index}>
               {Filter}
             </div>
           ))}
 
-          <button className="flex items-center cursor-pointer gap-2 px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition">
+          <button className="flex items-center cursor-pointer gap-2 px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition mx-2">
             {/* <RefreshCw className="w-5 h-5 animate-spin" /> */}
             <RefreshCw onClick={loadData} className="w-5 h-5" />
           </button>

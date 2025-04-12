@@ -1,6 +1,7 @@
 import { Minus } from "lucide-react";
 import { useEffect, useState } from "react";
 import MySelectComponent from "./form/MySelectComponent";
+import { getFilters, SongFilters } from "@/api/songs";
 
 export interface SongFilter {
   feature: string
@@ -48,11 +49,17 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
   const [operation, setOperation] = useState<any|null>(null);
   const [featureValue, setFeatureValue] = useState<number|any|null>();
 
+  const [songsFilters, setSongsFilters] = useState<SongFilters>({moods: [], genres: []})
+  
   // Select Options
   const [operationOptions, setOperationOptions] = useState<any[]>([])
   const [featureValueOpts, setFeatureValueOpts] = useState<any[]>([])
 
-  const [classificationCriterias, setClassificationCriterias] = useState<any[]>([])
+  const [classificationCriterias, setClassificationCriterias] = useState<any[]>(() => {
+    // Load from localStorage on initial render
+    const saved = localStorage.getItem('classificationCriterias');
+    return saved ? JSON.parse(saved) : [];
+  })
 
   const removeCriteriaFromClassification = (e:any, criteria:any) => {
     e.stopPropagation()
@@ -85,9 +92,9 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
 
     let valueOptions = []
     if (feature.value == "mood") {
-      valueOptions = ["action","adventure","advertising","background","ballad","calm","children","christmas","commercial","cool","corporate","dark","deep","documentary","drama","dramatic","dream","emotional","energetic","epic","fast","film","fun","funny","game","groovy","happy","heavy","holiday","hopeful","inspiring","love","meditative","melancholic","melodic","motivational","movie","nature","party","positive","powerful","relaxing","retro","romantic","sad","sexy","slow","soft","soundscape","space","sport","summer","trailer","travel","upbeat","uplifting"]
+      valueOptions = songsFilters.moods
     } else {
-      valueOptions = ["60s","70s","80s","90s","acidjazz","alternative","alternativerock","ambient","atmospheric","blues","bluesrock","bossanova","breakbeat","celtic","chanson","chillout","choir","classical","classicrock","club","contemporary","country","dance","darkambient","darkwave","deephouse","disco","downtempo","drumnbass","dub","dubstep","easylistening","edm","electronic","electronica","electropop","ethno","eurodance","experimental","folk","funk","fusion","groove","grunge","hard","hardrock","hiphop","house","idm","improvisation","indie","industrial","instrumentalpop","instrumentalrock","jazz","jazzfusion","latin","lounge","medieval","metal","minimal","newage","newwave","orchestral","pop","popfolk","poprock","postrock","progressive","psychedelic","punkrock","rap","reggae","rnb","rock","rocknroll","singersongwriter","soul","soundtrack","swing","symphonic","synthpop","techno","trance","triphop","world","worldfusion"]
+      valueOptions = songsFilters.genres
     }
 
     setFeatureValueOpts(valueOptions)
@@ -114,6 +121,11 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
     })  
   }
 
+  const getSongFilters = async () => {
+    const data = await getFilters()
+
+    setSongsFilters(data)
+  }
 
   useEffect(() => {
     setOperation(null)
@@ -124,8 +136,15 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
   
   useEffect(() => {
     onFilterChange(classificationCriterias)
+
+    // save the criterias to storage
+    localStorage.setItem('classificationCriterias', JSON.stringify(classificationCriterias));
   }, [classificationCriterias])
   
+  useEffect(() => {
+    getSongFilters()
+  }, [])
+
   return (
     <div className="grid grid-cols-2 gap-4">
       <div>
