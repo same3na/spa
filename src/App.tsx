@@ -39,7 +39,7 @@ function App() {
             <div className='p-4'>
               <Routes>
                 <Route path="/login" element={<Login />} />
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<PrivateRoute><Home/></PrivateRoute>} />
                 <Route path="/search" element={<PrivateRoute><SearchPage/></PrivateRoute>} />
                 <Route path="/search/artists" element={<PrivateRoute><Artists/></PrivateRoute>} />
                 <Route path="/search/artists/:id" element={<PrivateRoute><ArtistSongs/></PrivateRoute>} />
