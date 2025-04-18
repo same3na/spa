@@ -21,10 +21,20 @@ import ClassificationCreate from './pages/classifications/ClassificationCreate'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Login from './pages/auth/Login'
 import ErrorMessage from './components/ErrorMessage'
+import Groups from './pages/groups/Groups'
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  const { isAuthenticated, hasGroupId } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
+  if (!hasGroupId && location.pathname !== "/groups") {
+    return <Navigate to="/groups" />;
+  }
+
+  return <>{children}</>;
 };
 
 function App() {
@@ -39,6 +49,7 @@ function App() {
             <div className='p-4'>
               <Routes>
                 <Route path="/login" element={<Login />} />
+                <Route path="/groups" element={<PrivateRoute><Groups/></PrivateRoute>} />
                 <Route path="/" element={<PrivateRoute><Home/></PrivateRoute>} />
                 <Route path="/search" element={<PrivateRoute><SearchPage/></PrivateRoute>} />
                 <Route path="/search/artists" element={<PrivateRoute><Artists/></PrivateRoute>} />

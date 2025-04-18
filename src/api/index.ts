@@ -12,8 +12,12 @@ const apiClient = axios.create({
 // Add token to all requests
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
+  const groupId = localStorage.getItem('group_id');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  }
+  if (groupId) {
+    config.headers["X-Group-ID"] = groupId
   }
   return config;
 });
