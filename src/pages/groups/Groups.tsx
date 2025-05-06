@@ -11,7 +11,6 @@ export default function Groups() {
 
   const fetchGroups = async() => {
     const data = await getGroupsApi()
-    console.log(data)
     setGroups(data)
   }
 

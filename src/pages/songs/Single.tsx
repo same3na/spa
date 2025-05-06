@@ -1,12 +1,14 @@
 
 import { useParams } from "react-router-dom";
 import { getSingleSong, SongSingle as SongSingleModel } from "@/api/songs";
+import { isLikedSong as isLikedSongApi, LikeSong, DislikeSong} from "@/api/user";
 import { useEffect, useCallback, useState } from "react";
 
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from 'recharts';
 
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { Star } from "lucide-react";
 
 export default function SongSingle() {
   const { id } = useParams(); // Extract the dynamic route parameter
@@ -16,6 +18,7 @@ export default function SongSingle() {
   }
 
   const [song, setSong] = useState<SongSingleModel | null>(null)
+  const [isLikedSong, setIsLikedSong] = useState<boolean>(false)
 
 
   const COLORS = [
@@ -33,14 +36,53 @@ export default function SongSingle() {
     setSong(data)
   }, [id])
 
+  const getIsSongLiked = async(id:string) => {
+    const isLiked: boolean = await isLikedSongApi({song_id: id})
+    setIsLikedSong(isLiked)
+  }
+
+  const setSongLiked = async() => {
+    if (!song) {
+      return
+    }
+
+    if (isLikedSong == true) {
+      await DislikeSong({song_id:song.id})
+    } else {
+      await LikeSong({song_id:song.id})
+    }
+
+    await getIsSongLiked(song.id)
+  }
+
   useEffect(() => {
     // get cluster by id
     getSong(id)
-
+    getIsSongLiked(id)
   }, [id])
   
   return (
     <div>
+      <div className="">
+        <button
+          onClick={(e) => setSongLiked()} 
+          className="px-3 py-1 text-xsm rounded cursor-pointer mx-2 transition-all hover:bg-gray-800"
+        >
+          <div className="flex space-x-4">
+            {isLikedSong ? (
+              <Star color="#FFD700" />
+            ) :
+              <Star />
+            }
+
+            <span>
+              {isLikedSong == true ? "Remove Song From Favorite" : "Add Song To Favorite"}
+            </span>
+
+          </div>
+        </button>
+
+      </div>
       <div className="grid grid-cols-3 gap-4 mt-5 mb-10 justify-items-center">
         <div className="flex items-center">
           <h2 className="text-center text-white text-2xl font-semibold mr-3">Title:</h2>
