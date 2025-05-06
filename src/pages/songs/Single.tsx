@@ -1,7 +1,7 @@
 
 import { useParams } from "react-router-dom";
 import { getSingleSong, SongSingle as SongSingleModel } from "@/api/songs";
-import { isLikedSong as isLikedSongApi, LikeSong, DislikeSong} from "@/api/user";
+import { LikeSong, DislikeSong, isLikedSong as isLikedSongApi} from "@/api/user";
 import { useEffect, useCallback, useState } from "react";
 
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from 'recharts';
@@ -65,7 +65,7 @@ export default function SongSingle() {
     <div>
       <div className="">
         <button
-          onClick={(e) => setSongLiked()} 
+          onClick={() => setSongLiked()} 
           className="px-3 py-1 text-xsm rounded cursor-pointer mx-2 transition-all hover:bg-gray-800"
         >
           <div className="flex space-x-4">
