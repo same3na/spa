@@ -24,7 +24,6 @@ export default function Home() {
 
   const fetchPlaylist = async(song_id?: string) => {
     const data = await getPlaylist({ song_id, artist_ids: songsFilter?.artists, feature_filter: songsFilter?.criterias })
-    console.log(data)
     setPlaylist(data)
   }
 
@@ -39,14 +38,11 @@ export default function Home() {
 
   const playRandomSongs = async () => {
     // first get playlist then play the first song
-    await fetchPlaylist()
-    console.log(playlist)
-
-    setTimeout(function (){
-  
-      console.log(playlist)
-                
-    }, 1000); // How long you want the delay to be, measured in milliseconds.
+    const data = await getPlaylist({ song_id: undefined, artist_ids: songsFilter?.artists, feature_filter: songsFilter?.criterias })
+    setPlaylist(data)
+    if (data.length > 0) {
+      setSong(data[0])
+    }
   }
 
   return (
