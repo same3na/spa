@@ -24,6 +24,7 @@ export default function Home() {
 
   const fetchPlaylist = async(song_id?: string) => {
     const data = await getPlaylist({ song_id, artist_ids: songsFilter?.artists, feature_filter: songsFilter?.criterias })
+    console.log(data)
     setPlaylist(data)
   }
 
