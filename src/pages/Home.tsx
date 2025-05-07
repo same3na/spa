@@ -9,7 +9,7 @@ import ModalComponent from "@/components/ModalComponent";
 
 
 export default function Home() {
-  const { setSong, setPlaylist } = usePlayer();
+  const { setSong, playlist, setPlaylist } = usePlayer();
   const [songsFilter, setSongsFilter] = useState<SongsFilter | null>(null)
   const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false)
 
@@ -22,18 +22,24 @@ export default function Home() {
     return { data: data.data, total: data.total };
   }, [songsFilter]);
 
-  const fetchPlaylist = useCallback(async(song_id: string, artist_ids: string[]) => {
+  const fetchPlaylist = useCallback(async(artist_ids: string[], song_id?: string) => {
     const data = await getPlaylist({ song_id, artist_ids, feature_filter: songsFilter?.criterias })
     setPlaylist(data)
   }, [songsFilter])
 
   const onPlaySongClick = async(song:Song) => {
     setSong(song)
-    fetchPlaylist(song.id, songsFilter ? songsFilter.artists : [])
+    fetchPlaylist(songsFilter ? songsFilter.artists : [], song.id)
   }
 
   const onFilterChange = (filters:SongsFilter) => {
     setSongsFilter(filters)
+  }
+
+  const playRandomSongs = async () => {
+    // first get playlist then play the first song
+    await fetchPlaylist(songsFilter ? songsFilter.artists : [])
+    setSong(playlist[0])
   }
 
 
@@ -76,10 +82,10 @@ export default function Home() {
         ]}
         fetchData={fetchSongs}
         tableBtns={[
-          // <TableBtn 
-          //   label={"Manage Songs"} 
-          //   btnClass={"bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow"} 
-          //   onButtonClick={() => navigate('/search')} />,
+          <TableBtn 
+            label={"Play Random"} 
+            btnClass={"bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow"} 
+            onButtonClick={() => playRandomSongs()} />,
 
           <TableBtn 
             label={"Filter"} 
