@@ -5,7 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 
 const navigation = [
   { name: 'All Songs', href: '/' },
-  // { name: 'Add Songs', href: '/search' },
+  { name: 'Add Songs', href: '/search' },
   // { name: 'Search By Artist', href: '/search/artists' },
   // { name: 'Clusters', href: '/clusters' },
   // { name: 'Playlists', href: '/playlists' },
@@ -16,6 +16,8 @@ export default function SiteMenu() {
   const pathname = location.pathname; // Get the current route
 
   const { isAuthenticated, logout } = useAuth();
+
+  if (!isAuthenticated) return
 
   return (
     <div>
