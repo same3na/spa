@@ -1,18 +1,12 @@
 import { Minus } from "lucide-react";
 import { useEffect, useState } from "react";
 import MySelectComponent from "./form/MySelectComponent";
-import { Artist, getFilters, SongFilters, getSongsArtist } from "@/api/songs";
+import { Artist, getFilters, SongFilters, getSongsArtist, SongsCriteriaFilter } from "@/api/songs";
 import TableFilter from "./table/TableFilterComponent";
-
-export interface ClassificationCriteria {
-  feature: string
-  operation: string
-  value: string
-}
 
 export interface SongsFilter {
   artists: string[]
-  criterias: ClassificationCriteria[]
+  criterias: SongsCriteriaFilter[]
 }
 
 interface FilterSongsComponentProps {

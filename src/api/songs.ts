@@ -1,7 +1,12 @@
 import SongSingle from '@/pages/songs/Single';
 import apiClient from './index';
 import { PagingResponse } from './paging';
-import { SongFilter } from '@/components/FilterSongsComponent';
+
+export interface SongsCriteriaFilter {
+  feature: string
+  operation: string
+  value: string
+}
 
 export interface Artist {
   id: string
@@ -45,7 +50,7 @@ export interface SongSingle extends Song{
   }
 }
 
-export const getSongs = async (data: {page: number, limit: number, search: string | null, ids?: Array<string>, artistIds?: Array<string>, featureFilter?: Array<SongFilter>}): Promise<PagingResponse<Song>> => {
+export const getSongs = async (data: {page: number, limit: number, search: string | null, ids?: Array<string>, artistIds?: Array<string>, featureFilter?: Array<SongsCriteriaFilter>}): Promise<PagingResponse<Song>> => {
   try {
     let params: {
       page: number
@@ -53,7 +58,7 @@ export const getSongs = async (data: {page: number, limit: number, search: strin
       search: string | null
       ids?: Array<string>
       artists_ids?: Array<string>
-      feature_filter?: Array<SongFilter>;
+      feature_filter?: Array<SongsCriteriaFilter>;
     } = {
       page: data.page, 
       limit: data.limit, 
@@ -82,7 +87,7 @@ export const getSongs = async (data: {page: number, limit: number, search: strin
   }
 };
 
-export const getPlaylist = async (data: {song_id: string, artist_ids?: string[], in_song_ids?: string[], feature_filter?: Array<SongFilter>}): Promise<Song[]> => {
+export const getPlaylist = async (data: {song_id: string, artist_ids?: string[], in_song_ids?: string[], feature_filter?: Array<SongsCriteriaFilter>}): Promise<Song[]> => {
   try {
     const response = await apiClient.post<Song[]>('/me/grp/playlist', data);
 
