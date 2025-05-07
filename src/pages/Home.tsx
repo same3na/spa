@@ -22,14 +22,14 @@ export default function Home() {
     return { data: data.data, total: data.total };
   }, [songsFilter]);
 
-  const fetchPlaylist = useCallback(async(artist_ids: string[], song_id?: string) => {
-    const data = await getPlaylist({ song_id, artist_ids, feature_filter: songsFilter?.criterias })
+  const fetchPlaylist = async(song_id?: string) => {
+    const data = await getPlaylist({ song_id, artist_ids: songsFilter?.artists, feature_filter: songsFilter?.criterias })
     setPlaylist(data)
-  }, [songsFilter])
+  }
 
   const onPlaySongClick = async(song:Song) => {
     setSong(song)
-    fetchPlaylist(songsFilter ? songsFilter.artists : [], song.id)
+    fetchPlaylist(song.id)
   }
 
   const onFilterChange = (filters:SongsFilter) => {
@@ -38,8 +38,7 @@ export default function Home() {
 
   const playRandomSongs = async () => {
     // first get playlist then play the first song
-    await fetchPlaylist(songsFilter ? songsFilter.artists : [])
-
+    fetchPlaylist()
     console.log(playlist)
 
     setTimeout(function (){
