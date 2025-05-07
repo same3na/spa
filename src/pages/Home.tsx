@@ -39,7 +39,7 @@ export default function Home() {
 
   const playRandomSongs = async () => {
     // first get playlist then play the first song
-    fetchPlaylist()
+    await fetchPlaylist()
     console.log(playlist)
 
     setTimeout(function (){
