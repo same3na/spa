@@ -39,9 +39,15 @@ export default function Home() {
   const playRandomSongs = async () => {
     // first get playlist then play the first song
     await fetchPlaylist(songsFilter ? songsFilter.artists : [])
-    setSong(playlist[0])
-  }
 
+    console.log(playlist)
+
+    setTimeout(function (){
+  
+      console.log(playlist)
+                
+    }, 1000); // How long you want the delay to be, measured in milliseconds.
+  }
 
   return (
     <div className="">
