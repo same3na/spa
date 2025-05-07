@@ -9,7 +9,7 @@ import ModalComponent from "@/components/ModalComponent";
 
 
 export default function Home() {
-  const { setSong, playlist, setPlaylist } = usePlayer();
+  const { setSong, setPlaylist } = usePlayer();
   const [songsFilter, setSongsFilter] = useState<SongsFilter | null>(null)
   const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false)
 
