@@ -22,6 +22,7 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import Login from './pages/auth/Login'
 import ErrorMessage from './components/ErrorMessage'
 import Groups from './pages/groups/Groups'
+import { FormProvider } from './context/FormContext'
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, hasGroupId } = useAuth();
@@ -44,31 +45,33 @@ function App() {
       <Router>
         <AuthProvider>
           <PlayerProvider>
-            <SiteMenu />
-            <ErrorMessage />
-            <div className='p-4'>
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/groups" element={<PrivateRoute><Groups/></PrivateRoute>} />
-                <Route path="/" element={<PrivateRoute><Home/></PrivateRoute>} />
-                <Route path="/search" element={<PrivateRoute><SearchPage/></PrivateRoute>} />
-                <Route path="/search/artists" element={<PrivateRoute><Artists/></PrivateRoute>} />
-                <Route path="/search/artists/:id" element={<PrivateRoute><ArtistSongs/></PrivateRoute>} />
-                <Route path="/clusters" element={<PrivateRoute><Clusters/></PrivateRoute>} />
-                <Route path="/clusters/create" element={<PrivateRoute><CreateCluster/></PrivateRoute>} />
-                <Route path="/clusters/:id" element={<PrivateRoute><ClusterSingle/></PrivateRoute>} />
-                <Route path="/clusters/:cluster_id/specifications" element={<PrivateRoute><ClusterSpecifications/></PrivateRoute>} />
-                <Route path="/clusters/:cluster_id/specifications/create" element={<PrivateRoute><CreateSpecification/></PrivateRoute>} />
-                <Route path="/specifications/:id" element={<PrivateRoute><EditSpecification/></PrivateRoute>} />
-                <Route path="/songs/:id" element={<PrivateRoute><SongSingle/></PrivateRoute>} />
-                <Route path="/playlists" element={<PrivateRoute><Playlists/></PrivateRoute>} />
-                <Route path="/playlist/create" element={<PrivateRoute><PlaylistCreate/></PrivateRoute>} />
-                <Route path="/classifications" element={<PrivateRoute><Classifications/></PrivateRoute>} />
-                <Route path="/classification/create" element={<PrivateRoute><ClassificationCreate/></PrivateRoute>} />
-                <Route path="*" element={<Navigate to="/" />} />
-              </Routes>
-            </div>
-            <Player></Player>
+            <FormProvider>
+              <SiteMenu />
+              <ErrorMessage />
+              <div className='p-4'>
+                <Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/groups" element={<PrivateRoute><Groups/></PrivateRoute>} />
+                  <Route path="/" element={<PrivateRoute><Home/></PrivateRoute>} />
+                  <Route path="/search" element={<PrivateRoute><SearchPage/></PrivateRoute>} />
+                  <Route path="/search/artists" element={<PrivateRoute><Artists/></PrivateRoute>} />
+                  <Route path="/search/artists/:id" element={<PrivateRoute><ArtistSongs/></PrivateRoute>} />
+                  <Route path="/clusters" element={<PrivateRoute><Clusters/></PrivateRoute>} />
+                  <Route path="/clusters/create" element={<PrivateRoute><CreateCluster/></PrivateRoute>} />
+                  <Route path="/clusters/:id" element={<PrivateRoute><ClusterSingle/></PrivateRoute>} />
+                  <Route path="/clusters/:cluster_id/specifications" element={<PrivateRoute><ClusterSpecifications/></PrivateRoute>} />
+                  <Route path="/clusters/:cluster_id/specifications/create" element={<PrivateRoute><CreateSpecification/></PrivateRoute>} />
+                  <Route path="/specifications/:id" element={<PrivateRoute><EditSpecification/></PrivateRoute>} />
+                  <Route path="/songs/:id" element={<PrivateRoute><SongSingle/></PrivateRoute>} />
+                  <Route path="/playlists" element={<PrivateRoute><Playlists/></PrivateRoute>} />
+                  <Route path="/playlist/create" element={<PrivateRoute><PlaylistCreate/></PrivateRoute>} />
+                  <Route path="/classifications" element={<PrivateRoute><Classifications/></PrivateRoute>} />
+                  <Route path="/classification/create" element={<PrivateRoute><ClassificationCreate/></PrivateRoute>} />
+                  <Route path="*" element={<Navigate to="/" />} />
+                </Routes>
+              </div>
+              <Player></Player>
+            </FormProvider>
           </PlayerProvider>
         </AuthProvider>
       </Router>

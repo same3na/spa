@@ -35,13 +35,20 @@ apiClient.interceptors.request.use((config) => {
 // );
 
 // Custom hook to setup interceptors
-export const setupInterceptors = (setError: (msg: string) => void, setErrorStatus: (status:number) => void) => {
+export const setupInterceptors = (setError: (msg: string) => void, setErrorStatus: (status:number) => void, setErrorDetails: (details:{}) => void) => {
   apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
       setErrorStatus(error.response.status)
       const msg = error.response?.data?.message || "Something went wrong";
       setError(msg);
+      const details = error.response?.data?.details || {}
+      const normalized_details:any = {};
+      for (const key in details) {
+        const newKey = key.charAt(0).toLowerCase() + key.slice(1);
+        normalized_details[newKey] = details[key];
+      }
+      setErrorDetails(normalized_details)
       return Promise.reject(error);
     }
   );
