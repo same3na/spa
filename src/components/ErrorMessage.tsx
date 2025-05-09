@@ -36,7 +36,11 @@ export default function ErrorMessage() {
     if (!message) return;
 
     toast.error(message)
-    setMessage("")
+    // wait a bit before reseting the message
+    // this way we dont get similar messages
+    setTimeout(function (){
+      setMessage("")                
+    }, 1000); 
   }, [message])
 
   return (
