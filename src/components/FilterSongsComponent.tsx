@@ -1,8 +1,8 @@
 import { Minus } from "lucide-react";
 import { useEffect, useState } from "react";
-import MySelectComponent from "./form/MySelectComponent";
+import MySelectComponent, { MySelectOption } from "./form/MySelectComponent";
 import { Artist, getFilters, SongFilters, getSongsArtist, SongsCriteriaFilter } from "@/api/songs";
-import TableFilter from "./table/TableFilterComponent";
+import isEqual from 'lodash/isEqual'
 
 export interface SongsFilter {
   artists: string[]
@@ -136,6 +136,13 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
     setArtists(data)
   }
 
+  const handleArtistChange = (eles:MySelectOption[]) => {
+    const newIds = eles.map((option: MySelectOption) => {return option.value});
+    if (!isEqual(filterArtists, newIds)) {
+      setFilterArtists(newIds);
+    }
+  }
+
   useEffect(() => {
     setOperation(null)
     setFeatureValue(null)
@@ -149,7 +156,6 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
       artists: filterArtists,
       criterias: classificationCriterias
     }
-
     onFilterChange(songsFilter)
 
     // save the criterias to storage
@@ -163,13 +169,21 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
   return (
     <div>
       <div>
-        <TableFilter
-          label="Artists"
-          items={artists}
-          onFilterChange={(filter: Array<Artist>) => {
-            setFilterArtists(filter.map(f => (f.id)))
-          }}
-        />  
+        <div className="mb-4">
+          <label htmlFor="artists-select" className="block font-medium mb-2">
+            Artists:
+          </label>
+          <MySelectComponent
+            isMulti={true}
+            hasAll={true}
+            onSelectChange={(ele:any) => handleArtistChange(ele)}
+            options={artists.map((ele:Artist) => { return {
+              value: ele.id,
+              label: ele.name
+            } })} 
+          />
+        </div>
+
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>

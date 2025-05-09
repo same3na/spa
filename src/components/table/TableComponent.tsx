@@ -1,5 +1,6 @@
 import { RefreshCw } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import MyInputComponent from "../form/MyInputComponent";
 
 interface Column<T> {
   key: keyof T | "custom"; // Field in row data or a custom column
@@ -52,19 +53,18 @@ const Table = <T,>({ columns, fetchData, additionalData, tableFilters, tableBtns
 
   return (
     <div className="table-container min-w-full">
-      <div className="flex justify-between">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 py-2">
         <div>
-          <input
-            type="text"
-            id="description"
+          <MyInputComponent 
+            label={""} 
+            name="description"
             value={search}
+            placeholder="Search"
             onChange={(e) => setSearch(e.target.value)}
-            className="bg-transparent px-4 py-2 bg-gray-800 border-gray-700 text-gray-200 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Enter Search"
           />
         </div>
 
-        <div className="flex my-4">
+        <div className="flex items-center">
           {tableBtns && tableBtns.map((Button, index) => (
             <div className="px-1" key={index}>
               {Button}
@@ -86,44 +86,46 @@ const Table = <T,>({ columns, fetchData, additionalData, tableFilters, tableBtns
 
 
       {/* Table */}
-      <table className="min-w-full border border-gray-700">
-        <thead className="bg-gray-800">
-          <tr>
-            {columns.map((col, idx) => (
-              <th key={idx} className="px-4 py-2 text-left text-gray-300">
-                {col.label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {loading ? (
-            <tr className="border-t border-gray-700 hover:bg-gray-800">
-              <td colSpan={columns.length} className="px-4 py-2 text-gray-300">
-                Loading...
-              </td>
-            </tr>
-          ) : data && data.length > 0 ? (
-            data.map((row, rowIndex) => (
-              <tr key={rowIndex} className="border-t border-gray-700 hover:bg-gray-800">
-                {columns.map((col, colIndex) => (
-                  <td key={colIndex} className="px-4 py-2 text-gray-300">
-                    {col.key === "custom" && col.render
-                      ? col.render(row) // Use custom render for "custom" columns
-                      : String(row[col.key as keyof T])} {/* Default column */}
-                  </td>
-                ))}
-              </tr>
-            ))
-          ) : (
+      <div className="overflow-x-auto">
+        <table className="min-w-full border border-gray-700">
+          <thead className="bg-gray-800">
             <tr>
-              <td colSpan={columns.length} className="text-center py-4">
-                No data available
-              </td>
+              {columns.map((col, idx) => (
+                <th key={idx} className="px-4 py-2 text-left text-gray-300">
+                  {col.label}
+                </th>
+              ))}
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr className="border-t border-gray-700 hover:bg-gray-800">
+                <td colSpan={columns.length} className="px-4 py-2 text-gray-300">
+                  Loading...
+                </td>
+              </tr>
+            ) : data && data.length > 0 ? (
+              data.map((row, rowIndex) => (
+                <tr key={rowIndex} className="border-t border-gray-700 hover:bg-gray-800">
+                  {columns.map((col, colIndex) => (
+                    <td key={colIndex} className="px-4 py-2 text-gray-300">
+                      {col.key === "custom" && col.render
+                        ? col.render(row) // Use custom render for "custom" columns
+                        : String(row[col.key as keyof T])} {/* Default column */}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={columns.length} className="text-center py-4">
+                  No data available
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
       {/* Pagination */}
       <div className="flex justify-end items-center mt-4">

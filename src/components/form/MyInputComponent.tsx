@@ -5,7 +5,7 @@ interface InputFieldProps {
   label: string;
   name: string;
   value: string;
-  className: string;
+  className?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
   placeholder?: string
@@ -33,7 +33,7 @@ export default function MyInputComponent({ label, name, value, className, onChan
         id={name}
         value={value}
         onChange={onChange}    
-        className={`bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${className}`} 
+        className={`bg-transparent px-4 py-2 bg-gray-800 border-gray-700 text-gray-200 placeholder-gray-400 shadow-sm focus:outline-none  w-full ${className}`} 
         placeholder={placeholder}
       />
       {inputError && (

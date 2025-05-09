@@ -2,19 +2,22 @@ import { useEffect, useState } from 'react'
 import Select, { StylesConfig } from 'react-select'
 
 
-interface MySelectOption {
+export interface MySelectOption {
   value: string
   label: string
 }
 
 interface MySelectProps {
-  selectedValue: any
+  selectedValue?: any
   options: MySelectOption[]
   isMulti?: boolean
+  hasAll?: boolean
   onSelectChange: (option: MySelectOption[] | MySelectOption) => void
 }
 
-export default function MySelectComponent({selectedValue, options, isMulti = false, onSelectChange}: MySelectProps) {
+export default function MySelectComponent({selectedValue, options, isMulti = false, hasAll = false, onSelectChange}: MySelectProps) {
+  const allOption: MySelectOption = { value: 'all', label: 'All' };
+  const fullOptions = hasAll ? [allOption, ...options] : options;
 
   const [selectValue, setSelectValue] = useState<MySelectOption[] | MySelectOption | null>(null)
 
@@ -57,12 +60,27 @@ export default function MySelectComponent({selectedValue, options, isMulti = fal
     }),
   };
 
+
   useEffect(() => {
-    if (!selectValue) {
-      return
-    } else {
-      onSelectChange(selectValue)
+    if (!selectValue) return;
+
+    if (isMulti && hasAll) {
+      const values = selectValue as MySelectOption[];
+      const isAllSelected = values.some((v) => v.value === 'all');
+  
+      if (isAllSelected) {
+        const allRealOptions = [...options]; // exclude 'All'
+        setSelectValue([allOption, ...allRealOptions]);
+        onSelectChange(allRealOptions); // 🔥 send only real artists to parent
+        return;
+      }
+  
+      const filtered = values.filter((v) => v.value !== 'all');
+      setSelectValue(filtered);
+      onSelectChange(filtered);
+      return;
     }
+    onSelectChange(selectValue);
   }, [selectValue])
 
   return(
@@ -72,7 +90,7 @@ export default function MySelectComponent({selectedValue, options, isMulti = fal
         isMulti={isMulti}
         value={selectValue}
         onChange={(ele) => setSelectValue(ele)}
-        options={options}
+        options={fullOptions}
         styles={darkModeStyles}
       />    
     </div>

@@ -33,7 +33,7 @@ export default function Login() {
                 label={"Username"} 
                 name={"username"} 
                 value={username} 
-                className={""} 
+                className="text-gray-700"
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Username"   
               />
@@ -43,7 +43,7 @@ export default function Login() {
                 name={"password"} 
                 value={password}
                 type="password"
-                className={""} 
+                className="text-gray-700"
                 onChange={(e) => setPassword(e.target.value)}  
                 placeholder="••••••••"  
               />
