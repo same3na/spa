@@ -2,7 +2,7 @@ import { Minus } from "lucide-react";
 import { useEffect, useState } from "react";
 import MySelectComponent, { MySelectOption } from "./form/MySelectComponent";
 import { Artist, getFilters, SongFilters, getSongsArtist, SongsCriteriaFilter } from "@/api/songs";
-import isEqual from 'lodash/isEqual'
+import MyButtonComponent from "./form/MyButtonComponent";
 
 export interface SongsFilter {
   artists: string[]
@@ -10,10 +10,11 @@ export interface SongsFilter {
 }
 
 interface FilterSongsComponentProps {
-  onFilterChange: (filters: SongsFilter) => void
+  onSaveFilter: (filters: SongsFilter) => void
+  onCancelFilter: () => void
 }
 
-export default function FilterSongsComponent({onFilterChange}:FilterSongsComponentProps) {
+export default function FilterSongsComponent({onSaveFilter, onCancelFilter}:FilterSongsComponentProps) {
   const featureOptions = [
     {
       value: "mood",
@@ -51,8 +52,10 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
 
   const [songsFilters, setSongsFilters] = useState<SongFilters>({moods: [], genres: []})
 
+  // all artists list
   const [artists, setArtists] = useState<Artist[]>([])
-  const [filterArtists, setFilterArtists] = useState<string[]>([])
+  // selected artists from filter
+  const [filterArtists, setFilterArtists] = useState<MySelectOption[]>([])
   
   // Select Options
   const [operationOptions, setOperationOptions] = useState<any[]>([])
@@ -131,17 +134,21 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
   }
 
   const getArtists = async () => {
-    const data = await getSongsArtist()
+    const data:Artist[] = await getSongsArtist()
+
+    // construct the default filterArtists if it's saved in the storage
+    // Now since we have the artist we know the name and the id and we can construct items for MySelectOption[]
+    const saved = localStorage.getItem('SongsFilter');
+    const savedArtists:string[] = saved ? JSON.parse(saved).artists : [];
+
+    const artistsSelectOptionsdata:MySelectOption[] = data.
+      filter((artist:Artist) => {return savedArtists.includes(artist.id)}).
+      map((artist:Artist) => {return {value: artist.id, label: artist.name}})
 
     setArtists(data)
+    setFilterArtists(artistsSelectOptionsdata)
   }
 
-  const handleArtistChange = (eles:MySelectOption[]) => {
-    const newIds = eles.map((option: MySelectOption) => {return option.value});
-    if (!isEqual(filterArtists, newIds)) {
-      setFilterArtists(newIds);
-    }
-  }
 
   useEffect(() => {
     setOperation(null)
@@ -150,18 +157,18 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
     setFeatureValues()
     getArtists()
   }, [feature])
-  
-  useEffect(() => {
+
+  const saveFilter = () => {
     const songsFilter:SongsFilter = {
-      artists: filterArtists,
+      artists: filterArtists.map((e) => e.value),
       criterias: classificationCriterias
     }
-    onFilterChange(songsFilter)
+    onSaveFilter(songsFilter)
 
     // save the criterias to storage
     localStorage.setItem('SongsFilter', JSON.stringify(songsFilter));
-  }, [classificationCriterias, filterArtists])
-  
+  }
+    
   useEffect(() => {
     getSongFilters()
   }, [])
@@ -174,9 +181,10 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
             Artists:
           </label>
           <MySelectComponent
+            values={filterArtists}
             isMulti={true}
             hasAll={true}
-            onSelectChange={(ele:any) => handleArtistChange(ele)}
+            onSelectChange={(ele:any) => setFilterArtists(ele)}
             options={artists.map((ele:Artist) => { return {
               value: ele.id,
               label: ele.name
@@ -227,7 +235,7 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
               Feature:
             </label>
             <MySelectComponent
-              selectedValue={feature}
+              values={feature}
               onSelectChange={(ele) => setFeature(ele)}
               options={featureOptions} 
             />
@@ -238,7 +246,7 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
               Operation:
             </label>
             <MySelectComponent 
-              selectedValue={operation}
+              values={operation}
               onSelectChange={(ele) => {setOperation(ele)}}
               options={operationOptions} 
             />
@@ -251,7 +259,7 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
 
             {feature && ["mood", "genre"].includes(feature.value) ? (
               <MySelectComponent
-                selectedValue={featureValue}
+                values={featureValue}
                 isMulti={true}
                 onSelectChange={(ele) => setFeatureValue(ele)}
                 options={featureValueOpts.map((item) => ({value: item, label: item}))} 
@@ -271,14 +279,28 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
           </div>
 
           <div>
-            <button
+            <MyButtonComponent
               onClick={onAddCriteria}
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200 cursor-pointer"
             >
               Add Criteria
-            </button>
+            </MyButtonComponent> 
           </div>
         </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 pt-6">
+        <MyButtonComponent
+          onClick={saveFilter}
+        >
+          Save
+        </MyButtonComponent> 
+
+        <MyButtonComponent
+          onClick={onCancelFilter}
+          className="bg-red-500 hover:bg-red-600 text-white"
+        >
+          Cancel
+        </MyButtonComponent> 
       </div>
     </div>
   )

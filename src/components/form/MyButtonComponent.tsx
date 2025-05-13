@@ -2,11 +2,11 @@ import { ReactNode, useState } from "react";
 
 interface MyButtonComponentProps {
   onClick: () => void
-  className: string
+  className?: string
   children: ReactNode
 }
 
-export default function MyButtonComponent({onClick, className, children}: MyButtonComponentProps) {
+export default function MyButtonComponent({onClick, className = "", children}: MyButtonComponentProps) {
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
@@ -22,7 +22,7 @@ export default function MyButtonComponent({onClick, className, children}: MyButt
     <button
       onClick={handleClick}
       disabled={loading}
-      className={`flex items-center justify-center px-4 py-2 rounded text-white font-semibold transition
+      className={`flex items-center justify-center px-4 py-2 rounded text-white font-semibold transition cursor-pointer w-full
         ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}
         ${className}
       `}

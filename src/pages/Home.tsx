@@ -34,6 +34,7 @@ export default function Home() {
 
   const onFilterChange = (filters:SongsFilter) => {
     setSongsFilter(filters)
+    setFilterModalOpen(false)
   }
 
   const playRandomSongs = async () => {
@@ -52,7 +53,8 @@ export default function Home() {
         onClose={() => setFilterModalOpen(false)} 
         contents={
           <FilterSongsComponent 
-            onFilterChange={onFilterChange}
+            onSaveFilter={onFilterChange} 
+            onCancelFilter={() => setFilterModalOpen(false)}          
           />
         } />
       <Table<Song>
