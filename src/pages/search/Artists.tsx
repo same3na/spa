@@ -48,7 +48,7 @@ export default function Artists() {
             List of downloaded sheets
           </div>
         </div> */}
-        <div className="grid grid-cols-6 col-span-4 px-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 col-span-4 col-span-4 px-5">
           {response && (
             response.map((item:Artist, index:number) => (
               <div 
