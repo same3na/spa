@@ -9,7 +9,7 @@ export interface IsSongLiked {
 }
 
 export const getLikedSongs = async():Promise<string[]> => {
-  const response = await apiClient.get<SongLiked>('/me/grp/liked-songs');
+  const response = await apiClient.get<SongLiked>('/me/liked-songs');
 
   var ids = response.data.songs_liked.map((ele) => {return ele.id});
 
@@ -17,15 +17,15 @@ export const getLikedSongs = async():Promise<string[]> => {
 }
 
 export const isLikedSong = async(data: {song_id: string}):Promise<boolean> => {
-  const response = await apiClient.get<IsSongLiked>(`/me/grp/is-song-liked/${data.song_id}`);
+  const response = await apiClient.get<IsSongLiked>(`/me/is-song-liked/${data.song_id}`);
 
   return response.data.is_liked
 }
 
 export const LikeSong = async(data: {song_id: string}):Promise<void> => {
-  await apiClient.post('/me/grp/like-song', data)
+  await apiClient.post('/me/like-song', data)
 }
 
 export const DislikeSong = async(data: {song_id: string}):Promise<void> => {
-  await apiClient.post('/me/grp/dislike-song', data)
+  await apiClient.post('/me/dislike-song', data)
 }

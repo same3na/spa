@@ -128,7 +128,7 @@ export default function FilterSongsComponent({onSaveFilter, onCancelFilter}:Filt
   }
 
   const getSongFilters = async () => {
-    const data = await getFilters()
+    const data = await getFilters({song_ids:[]})
 
     setSongsFilters(data)
   }

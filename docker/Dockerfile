@@ -9,7 +9,9 @@ RUN npm ci
 # Copy the project files into the working directory
 COPY ./ ./
 
-ENV VITE_API_BASE_URL='/backend-api'
+ARG VITE_API_BASE_URL='/backend-api'
+
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 
 # Build the React app for production
 RUN npm run build
@@ -18,7 +20,7 @@ RUN npm run build
 FROM nginx:stable-alpine as production
 
 # copy nginx configuration in side conf.d folder
-COPY --from=build /app/docker/nginx /etc/nginx/conf.d
+COPY --from=build /app/docker/nginx/default.prod.conf /etc/nginx/conf.d/default.conf
 
 # Copy the build output from the dist folder into the Nginx html directory
 COPY --from=build /app/dist /usr/share/nginx/html
