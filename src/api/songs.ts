@@ -78,7 +78,6 @@ export const getSongs = async (data: {page: number, limit: number, search: strin
     }
 
     const response = await apiClient.post<PagingResponse<Song>>('/me/query-songs', params);
-    console.log(response.data)
     return response.data;
 
   } catch (error) {
