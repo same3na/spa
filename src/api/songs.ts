@@ -77,7 +77,7 @@ export const getSongs = async (data: {page: number, limit: number, search: strin
       params.feature_filter = data.featureFilter
     }
 
-    const response = await apiClient.post<PagingResponse<Song>>('/me/grp/query-songs', params);
+    const response = await apiClient.post<PagingResponse<Song>>('/me/query-songs', params);
 
     return response.data;
 
@@ -89,7 +89,7 @@ export const getSongs = async (data: {page: number, limit: number, search: strin
 
 export const getPlaylist = async (data: {song_id?: string, artist_ids?: string[], in_song_ids?: string[], feature_filter?: Array<SongsCriteriaFilter>}): Promise<Song[]> => {
   try {
-    const response = await apiClient.post<Song[]>('/me/grp/playlist', data);
+    const response = await apiClient.post<Song[]>('/me/playlist', data);
 
     return response.data;  
   } catch(error) {
@@ -100,7 +100,7 @@ export const getPlaylist = async (data: {song_id?: string, artist_ids?: string[]
 
 export const getSongsArtist = async (): Promise<Artist[]> => {
   try {
-    const response = await apiClient.get<Artist[]>(`/me/grp/artists`)
+    const response = await apiClient.get<Artist[]>(`/me/artists`)
 
     return response.data;
 
@@ -110,15 +110,15 @@ export const getSongsArtist = async (): Promise<Artist[]> => {
   }
 }
 
-export const getFilters = async (): Promise<SongFilters> => {
-  const response = await apiClient.get<SongFilters>(`/me/grp/songs-filters`)
+export const getFilters = async (data: {song_ids: string[]}): Promise<SongFilters> => {
+  const response = await apiClient.post<SongFilters>(`/me/songs-filters`, data)
 
   return response.data
 }
 
 export const getSongIdsByArtists = async (data: {artist_ids: string[]}): Promise<string[]> => {
   try {
-    const response = await apiClient.post<string[]>(`/me/grp/song-ids`, data)
+    const response = await apiClient.post<string[]>(`/me/song-ids`, data)
 
     return response.data;
 
@@ -130,7 +130,7 @@ export const getSongIdsByArtists = async (data: {artist_ids: string[]}): Promise
 
 export const getSingleSong = async (id:string): Promise<any> => {
   try {
-    const response = await apiClient.get<SongSingle>(`/me/grp/songs/${id}`)
+    const response = await apiClient.get<SongSingle>(`/me/songs/${id}`)
 
     return response.data;
 
