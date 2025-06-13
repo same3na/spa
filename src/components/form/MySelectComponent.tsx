@@ -2,25 +2,28 @@ import { useEffect, useState } from 'react'
 import Select, { StylesConfig } from 'react-select'
 
 
-interface MySelectOption {
+export interface MySelectOption {
   value: string
   label: string
 }
 
 interface MySelectProps {
-  selectedValue: any
+  values?: MySelectOption[] | MySelectOption
   options: MySelectOption[]
   isMulti?: boolean
+  hasAll?: boolean
   onSelectChange: (option: MySelectOption[] | MySelectOption) => void
 }
 
-export default function MySelectComponent({selectedValue, options, isMulti = false, onSelectChange}: MySelectProps) {
+export default function MySelectComponent({values, options, isMulti = false, hasAll = false, onSelectChange}: MySelectProps) {
+  const allOption: MySelectOption = { value: 'all', label: 'All' };
+  const fullOptions = hasAll ? [allOption, ...options] : options;
 
   const [selectValue, setSelectValue] = useState<MySelectOption[] | MySelectOption | null>(null)
 
   useEffect(() => {
-    setSelectValue(selectedValue || null);
-  }, [selectedValue]);
+    setSelectValue(values || null);
+  }, [values]);
   
   // Define custom styles for Dark Mode
   const darkModeStyles: StylesConfig<{ value: string; label: string }, false> = {
@@ -57,13 +60,27 @@ export default function MySelectComponent({selectedValue, options, isMulti = fal
     }),
   };
 
-  useEffect(() => {
-    if (!selectValue) {
-      return
-    } else {
-      onSelectChange(selectValue)
+  const onOptionsChange = (ele:any) => {
+
+    if (!ele) return;
+
+    if (isMulti && hasAll) {
+      const values = ele as MySelectOption[];
+      const isAllSelected = values.some((v) => v.value === 'all');
+  
+      if (isAllSelected) {
+        const allRealOptions = [...options]; // exclude 'All'
+        onSelectChange(allRealOptions); // 🔥 send only real artists to parent
+        return;
+      }
+  
+      const filtered = values.filter((v) => v.value !== 'all');
+      onSelectChange(filtered);
+      return;
     }
-  }, [selectValue])
+    console.log("changing the option", ele)
+    onSelectChange(ele);
+  }
 
   return(
     <div>
@@ -71,8 +88,8 @@ export default function MySelectComponent({selectedValue, options, isMulti = fal
         // @ts-ignore
         isMulti={isMulti}
         value={selectValue}
-        onChange={(ele) => setSelectValue(ele)}
-        options={options}
+        onChange={onOptionsChange}
+        options={fullOptions}
         styles={darkModeStyles}
       />    
     </div>

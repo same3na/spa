@@ -1,18 +1,20 @@
 import { Minus } from "lucide-react";
 import { useEffect, useState } from "react";
-import MySelectComponent from "./form/MySelectComponent";
+import MySelectComponent, { MySelectOption } from "./form/MySelectComponent";
+import { Artist, getFilters, SongFilters, getSongsArtist, SongsCriteriaFilter } from "@/api/songs";
+import MyButtonComponent from "./form/MyButtonComponent";
 
-export interface SongFilter {
-  feature: string
-  operation: string
-  value: string
+export interface SongsFilter {
+  artists: string[]
+  criterias: SongsCriteriaFilter[]
 }
 
 interface FilterSongsComponentProps {
-  onFilterChange: (filters: SongFilter[]) => void
+  onSaveFilter: (filters: SongsFilter) => void
+  onCancelFilter: () => void
 }
 
-export default function FilterSongsComponent({onFilterChange}:FilterSongsComponentProps) {
+export default function FilterSongsComponent({onSaveFilter, onCancelFilter}:FilterSongsComponentProps) {
   const featureOptions = [
     {
       value: "mood",
@@ -48,11 +50,22 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
   const [operation, setOperation] = useState<any|null>(null);
   const [featureValue, setFeatureValue] = useState<number|any|null>();
 
+  const [songsFilters, setSongsFilters] = useState<SongFilters>({moods: [], genres: []})
+
+  // all artists list
+  const [artists, setArtists] = useState<Artist[]>([])
+  // selected artists from filter
+  const [filterArtists, setFilterArtists] = useState<MySelectOption[]>([])
+  
   // Select Options
   const [operationOptions, setOperationOptions] = useState<any[]>([])
   const [featureValueOpts, setFeatureValueOpts] = useState<any[]>([])
 
-  const [classificationCriterias, setClassificationCriterias] = useState<any[]>([])
+  const [classificationCriterias, setClassificationCriterias] = useState<any[]>(() => {
+    // Load from localStorage on initial render
+    const saved = localStorage.getItem('SongsFilter');
+    return saved ? JSON.parse(saved).criterias : [];
+  })
 
   const removeCriteriaFromClassification = (e:any, criteria:any) => {
     e.stopPropagation()
@@ -85,9 +98,9 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
 
     let valueOptions = []
     if (feature.value == "mood") {
-      valueOptions = ["action","adventure","advertising","background","ballad","calm","children","christmas","commercial","cool","corporate","dark","deep","documentary","drama","dramatic","dream","emotional","energetic","epic","fast","film","fun","funny","game","groovy","happy","heavy","holiday","hopeful","inspiring","love","meditative","melancholic","melodic","motivational","movie","nature","party","positive","powerful","relaxing","retro","romantic","sad","sexy","slow","soft","soundscape","space","sport","summer","trailer","travel","upbeat","uplifting"]
+      valueOptions = songsFilters.moods
     } else {
-      valueOptions = ["60s","70s","80s","90s","acidjazz","alternative","alternativerock","ambient","atmospheric","blues","bluesrock","bossanova","breakbeat","celtic","chanson","chillout","choir","classical","classicrock","club","contemporary","country","dance","darkambient","darkwave","deephouse","disco","downtempo","drumnbass","dub","dubstep","easylistening","edm","electronic","electronica","electropop","ethno","eurodance","experimental","folk","funk","fusion","groove","grunge","hard","hardrock","hiphop","house","idm","improvisation","indie","industrial","instrumentalpop","instrumentalrock","jazz","jazzfusion","latin","lounge","medieval","metal","minimal","newage","newwave","orchestral","pop","popfolk","poprock","postrock","progressive","psychedelic","punkrock","rap","reggae","rnb","rock","rocknroll","singersongwriter","soul","soundtrack","swing","symphonic","synthpop","techno","trance","triphop","world","worldfusion"]
+      valueOptions = songsFilters.genres
     }
 
     setFeatureValueOpts(valueOptions)
@@ -114,112 +127,180 @@ export default function FilterSongsComponent({onFilterChange}:FilterSongsCompone
     })  
   }
 
+  const getSongFilters = async () => {
+    const data = await getFilters({song_ids:[]})
+
+    setSongsFilters(data)
+  }
+
+  const getArtists = async () => {
+    const data:Artist[] = await getSongsArtist()
+
+    // construct the default filterArtists if it's saved in the storage
+    // Now since we have the artist we know the name and the id and we can construct items for MySelectOption[]
+    const saved = localStorage.getItem('SongsFilter');
+    const savedArtists:string[] = saved ? JSON.parse(saved).artists : [];
+
+    const artistsSelectOptionsdata:MySelectOption[] = data.
+      filter((artist:Artist) => {return savedArtists.includes(artist.id)}).
+      map((artist:Artist) => {return {value: artist.id, label: artist.name}})
+
+    setArtists(data)
+    setFilterArtists(artistsSelectOptionsdata)
+  }
+
 
   useEffect(() => {
     setOperation(null)
     setFeatureValue(null)
     setFeatureOperations()
     setFeatureValues()
+    getArtists()
   }, [feature])
-  
+
+  const saveFilter = () => {
+    const songsFilter:SongsFilter = {
+      artists: filterArtists.map((e) => e.value),
+      criterias: classificationCriterias
+    }
+    onSaveFilter(songsFilter)
+
+    // save the criterias to storage
+    localStorage.setItem('SongsFilter', JSON.stringify(songsFilter));
+  }
+    
   useEffect(() => {
-    onFilterChange(classificationCriterias)
-  }, [classificationCriterias])
-  
+    getSongFilters()
+  }, [])
+
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div>
       <div>
-        <h2 className="text-white text-xl font-semibold pb-4">Criterias</h2>
-          {classificationCriterias.map((criteria:any) => (
-            <div key={criteria.feature}>
-              <div className="font-semibold text-gray-300 hover:bg-gray-700 p-2 rounded-md max-w-full">
-                <input type="checkbox" id="toggle1" className="peer hidden" />
-                <label htmlFor="toggle1" className="cursor-pointer block">
-                  <div className="flex items-center">
+        <div className="mb-4">
+          <label htmlFor="artists-select" className="block font-medium mb-2">
+            Artists:
+          </label>
+          <MySelectComponent
+            values={filterArtists}
+            isMulti={true}
+            hasAll={true}
+            onSelectChange={(ele:any) => setFilterArtists(ele)}
+            options={artists.map((ele:Artist) => { return {
+              value: ele.id,
+              label: ele.name
+            } })} 
+          />
+        </div>
 
-                    {criteria.feature}
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <h2 className="text-white text-xl font-semibold pb-4">Criterias</h2>
+            {classificationCriterias.map((criteria:any) => (
+              <div key={criteria.feature}>
+                <div className="font-semibold text-gray-300 hover:bg-gray-700 p-2 rounded-md max-w-full">
+                  <input type="checkbox" id="toggle1" className="peer hidden" />
+                  <label htmlFor="toggle1" className="cursor-pointer block">
+                    <div className="flex items-center">
 
-                    <button
-                      onClick={(e) => removeCriteriaFromClassification(e, criteria)} 
-                      className="px-3 py-1 text-xsm rounded cursor-pointer mx-2 transition-all hover:bg-gray-800"
-                    >
-                      <Minus />
-                    </button>
+                      {criteria.feature}
 
-                  </div>
+                      <button
+                        onClick={(e) => removeCriteriaFromClassification(e, criteria)} 
+                        className="px-3 py-1 text-xsm rounded cursor-pointer mx-2 transition-all hover:bg-gray-800"
+                      >
+                        <Minus />
+                      </button>
 
-                </label>
-                <div className="max-h-0 overflow-hidden transition-all duration-300 ease-in-out peer-checked:max-h-50 peer-checked:overflow-scroll">
-                  <div className="mt-2 p-4 rounded-md bg-black">
-                    <pre>
-                      {JSON.stringify(criteria, null, 2)}
-                    </pre>
+                    </div>
+
+                  </label>
+                  <div className="max-h-0 overflow-hidden transition-all duration-300 ease-in-out peer-checked:max-h-50 peer-checked:overflow-scroll">
+                    <div className="mt-2 p-4 rounded-md bg-black">
+                      <pre>
+                        {JSON.stringify(criteria, null, 2)}
+                      </pre>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-      </div>
-
-      <div>
-        <h2 className="text-white text-xl font-semibold pb-4">Add Criteria</h2>
-
-        <div className="mb-4">
-          <label htmlFor="feature-select" className="block font-medium mb-2">
-            Feature:
-          </label>
-          <MySelectComponent
-            selectedValue={feature}
-            onSelectChange={(ele) => setFeature(ele)}
-            options={featureOptions} 
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="feature-select" className="block font-medium mb-2">
-            Operation:
-          </label>
-          <MySelectComponent 
-            selectedValue={operation}
-            onSelectChange={(ele) => {setOperation(ele)}}
-            options={operationOptions} 
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="feature-value" className="block font-medium mb-2">
-            Value:
-          </label>
-
-          {feature && ["mood", "genre"].includes(feature.value) ? (
-            <MySelectComponent
-              selectedValue={featureValue}
-              isMulti={true}
-              onSelectChange={(ele) => setFeatureValue(ele)}
-              options={featureValueOpts.map((item) => ({value: item, label: item}))} 
-            />
-          ): (
-            <div>
-              <input
-                type="text"
-                id="feature-value"
-                value={featureValue ? featureValue : 0}
-                onChange={(e) => setFeatureValue(parseInt(e.target.value))}
-                className="w-full px-4 py-2 bg-gray-800 border-gray-700 text-gray-200 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Feature Value"
-              />
-            </div>
-          )}
+            ))}
         </div>
 
         <div>
-          <button
-            onClick={onAddCriteria}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200 cursor-pointer"
-          >
-            Add Criteria
-          </button>
+          <h2 className="text-white text-xl font-semibold pb-4">Add Criteria</h2>
+
+          <div className="mb-4">
+            <label htmlFor="feature-select" className="block font-medium mb-2">
+              Feature:
+            </label>
+            <MySelectComponent
+              values={feature}
+              onSelectChange={(ele) => setFeature(ele)}
+              options={featureOptions} 
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="feature-select" className="block font-medium mb-2">
+              Operation:
+            </label>
+            <MySelectComponent 
+              values={operation}
+              onSelectChange={(ele) => {setOperation(ele)}}
+              options={operationOptions} 
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="feature-value" className="block font-medium mb-2">
+              Value:
+            </label>
+
+            {feature && ["mood", "genre"].includes(feature.value) ? (
+              <MySelectComponent
+                values={featureValue}
+                isMulti={true}
+                onSelectChange={(ele) => setFeatureValue(ele)}
+                options={featureValueOpts.map((item) => ({value: item, label: item}))} 
+              />
+            ): (
+              <div>
+                <input
+                  type="text"
+                  id="feature-value"
+                  value={featureValue ? featureValue : 0}
+                  onChange={(e) => setFeatureValue(parseInt(e.target.value))}
+                  className="w-full px-4 py-2 bg-gray-800 border-gray-700 text-gray-200 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Feature Value"
+                />
+              </div>
+            )}
+          </div>
+
+          <div>
+            <MyButtonComponent
+              onClick={onAddCriteria}
+            >
+              Add Criteria
+            </MyButtonComponent> 
+          </div>
         </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 pt-6">
+        <MyButtonComponent
+          onClick={saveFilter}
+        >
+          Save
+        </MyButtonComponent> 
+
+        <MyButtonComponent
+          onClick={onCancelFilter}
+          className="bg-red-500 hover:bg-red-600 text-white"
+        >
+          Cancel
+        </MyButtonComponent> 
       </div>
     </div>
   )

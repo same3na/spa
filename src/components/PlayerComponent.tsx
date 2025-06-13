@@ -1,5 +1,4 @@
-"use client"; 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import YouTube from "react-youtube";
 import { usePlayer } from "@/context/PlayerContext";
 import { Song } from "@/api/songs";
@@ -109,21 +108,6 @@ const Player = () => {
 
     playerRef.current.seekTo(seekTime, true); // Seek in video
   };
-
-  useEffect(() => {
-    if (playerRef.current && song) {
-      console.log("Playing song:", song);
-    }
-  }, [song]);
-
-  // useEffect(() => {
-  //   if (!playerRef.current) return
-  //   if (isPlaying === false) {
-  //     playerRef.current.pauseVideo();
-  //   } else if (isPlaying === true) {
-  //     playerRef.current.playVideo();
-  //   }
-  // }, [isPlaying]);
 
   return (
     <div className="fixed bottom-5 left-5">

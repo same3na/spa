@@ -1,7 +1,12 @@
 import SongSingle from '@/pages/songs/Single';
-import {apiClient} from './index';
+import apiClient from './index';
 import { PagingResponse } from './paging';
-import { SongFilter } from '@/components/FilterSongsComponent';
+
+export interface SongsCriteriaFilter {
+  feature: string
+  operation: string
+  value: string
+}
 
 export interface Artist {
   id: string
@@ -22,6 +27,11 @@ export interface Song {
   }
 }
 
+export interface SongFilters {
+  moods: string[]
+  genres: string[]
+}
+
 export interface SongSingle extends Song{
   features: {
     genre: {
@@ -40,7 +50,7 @@ export interface SongSingle extends Song{
   }
 }
 
-export const getSongs = async (data: {page: number, limit: number, search: string | null, ids?: Array<string>, artistIds?: Array<string>, featureFilter?: Array<SongFilter>}): Promise<PagingResponse<Song>> => {
+export const getSongs = async (data: {page: number, limit: number, search: string | null, ids?: Array<string>, artistIds?: Array<string>, featureFilter?: Array<SongsCriteriaFilter>}): Promise<PagingResponse<Song>> => {
   try {
     let params: {
       page: number
@@ -48,7 +58,7 @@ export const getSongs = async (data: {page: number, limit: number, search: strin
       search: string | null
       ids?: Array<string>
       artists_ids?: Array<string>
-      feature_filter?: Array<SongFilter>;
+      feature_filter?: Array<SongsCriteriaFilter>;
     } = {
       page: data.page, 
       limit: data.limit, 
@@ -67,7 +77,7 @@ export const getSongs = async (data: {page: number, limit: number, search: strin
       params.feature_filter = data.featureFilter
     }
 
-    const response = await apiClient.post<PagingResponse<Song>>('/query-songs', params);
+    const response = await apiClient.post<PagingResponse<Song>>('/me/query-songs', params);
 
     return response.data;
 
@@ -77,9 +87,9 @@ export const getSongs = async (data: {page: number, limit: number, search: strin
   }
 };
 
-export const getPlaylist = async (data: {song_id: string, artist_ids?: string[], in_song_ids?: string[]}): Promise<Song[]> => {
+export const getPlaylist = async (data: {song_id?: string, artist_ids?: string[], in_song_ids?: string[], feature_filter?: Array<SongsCriteriaFilter>}): Promise<Song[]> => {
   try {
-    const response = await apiClient.post<Song[]>('/playlist', data);
+    const response = await apiClient.post<Song[]>('/me/playlist', data);
 
     return response.data;  
   } catch(error) {
@@ -90,7 +100,7 @@ export const getPlaylist = async (data: {song_id: string, artist_ids?: string[],
 
 export const getSongsArtist = async (): Promise<Artist[]> => {
   try {
-    const response = await apiClient.get<Artist[]>(`/artists`)
+    const response = await apiClient.get<Artist[]>(`/me/artists`)
 
     return response.data;
 
@@ -100,9 +110,15 @@ export const getSongsArtist = async (): Promise<Artist[]> => {
   }
 }
 
+export const getFilters = async (data: {song_ids: string[]}): Promise<SongFilters> => {
+  const response = await apiClient.post<SongFilters>(`/me/songs-filters`, data)
+
+  return response.data
+}
+
 export const getSongIdsByArtists = async (data: {artist_ids: string[]}): Promise<string[]> => {
   try {
-    const response = await apiClient.post<string[]>(`/song-ids`, data)
+    const response = await apiClient.post<string[]>(`/me/song-ids`, data)
 
     return response.data;
 
@@ -114,7 +130,7 @@ export const getSongIdsByArtists = async (data: {artist_ids: string[]}): Promise
 
 export const getSingleSong = async (id:string): Promise<any> => {
   try {
-    const response = await apiClient.get<SongSingle>(`/songs/${id}`)
+    const response = await apiClient.get<SongSingle>(`/me/songs/${id}`)
 
     return response.data;
 
