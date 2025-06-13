@@ -22,8 +22,8 @@ export interface Song {
   external_url: string
   features: any
   analyze_success: {
-    Bool: boolean, 
-    Valid: boolean
+    bool: boolean, 
+    valid: boolean
   }
 }
 
@@ -78,7 +78,6 @@ export const getSongs = async (data: {page: number, limit: number, search: strin
     }
 
     const response = await apiClient.post<PagingResponse<Song>>('/me/query-songs', params);
-
     return response.data;
 
   } catch (error) {
