@@ -35,12 +35,12 @@ export interface Search {
   artist_reference: string
   artist_name: string
   search_succeeded: {
-    Bool: boolean, 
-    Valid: boolean
+    bool: boolean, 
+    valid: boolean
   }
   download_succeeded: {
-    Bool: boolean, 
-    Valid: boolean
+    bool: boolean, 
+    valid: boolean
   }
   total_songs: number
   created_at: string

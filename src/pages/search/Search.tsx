@@ -27,15 +27,15 @@ export default function SearchPage() {
           { key: "total_songs", label: "Total Songs" },
           { key: "custom", label: "Search Status", render: (row: Search) => (
             <div className="inline-flex items-center rounded-md text-xs font-medium  p-1">
-              { row.search_succeeded.Valid != true ? (
+              { row.search_succeeded.valid != true ? (
                 <div className="flex items-center justify-center">
                   <Loader className="animate-spin w-6 h-6 text-blue-500" />
                 </div>              
               ) : (
                 <div>
                     <span 
-                      className={(row.search_succeeded.Bool == true  ? "bg-green-50 text-green-700 ring-green-600/20" : "bg-red-50 text-red-700 ring-red-600/10")}>
-                        {row.search_succeeded.Bool == true  ? <Check /> : <X />}
+                      className={(row.search_succeeded.bool == true  ? "bg-green-50 text-green-700 ring-green-600/20" : "bg-red-50 text-red-700 ring-red-600/10")}>
+                        {row.search_succeeded.bool == true  ? <Check /> : <X />}
                     </span>
                 </div>
               )}
@@ -44,18 +44,18 @@ export default function SearchPage() {
           )},
           { key: "custom", label: "Add Songs", render: (row: Search) => (
             <div>
-              {row.download_succeeded.Valid != true ? (
+              {row.download_succeeded.valid != true ? (
                 <div>
                   <button 
-                    disabled={row.search_succeeded.Valid != true} 
-                    className={`text-white font-semibold py-1 px-2 rounded-sm shadow transition-all text-sm ${row.search_succeeded.Valid != true ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 cursor-pointer'}`} 
+                    disabled={row.search_succeeded.valid != true} 
+                    className={`text-white font-semibold py-1 px-2 rounded-sm shadow transition-all text-sm ${row.search_succeeded.valid != true ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 cursor-pointer'}`} 
                     onClick={() => addSongs(row.artist_reference)}>Add Songs</button>
                 </div>
               ) : (
                 <div>
                     <span 
-                      className={(row.search_succeeded.Bool == true  ? "bg-green-50 text-green-700 ring-green-600/20" : "bg-red-50 text-red-700 ring-red-600/10")}>
-                        {row.search_succeeded.Bool == true  ? <Check /> : <button className="cursor-pointer" onClick={() => addSongs(row.artist_reference)}> <X /> Retry </button>  }
+                      className={(row.search_succeeded.bool == true  ? "bg-green-50 text-green-700 ring-green-600/20" : "bg-red-50 text-red-700 ring-red-600/10")}>
+                        {row.search_succeeded.bool == true  ? <Check /> : <button className="cursor-pointer" onClick={() => addSongs(row.artist_reference)}> <X /> Retry </button>  }
                     </span>
                 </div>
               )}
