@@ -1,4 +1,5 @@
 import { getSearch, Search, addSongs as addSongsApi } from "@/api/search";
+import { removeArtistSearchFromGroup } from "@/api/groups";
 import { useNavigate } from "react-router-dom";
 import Table from "@/components/table/TableComponent";
 import { Check, Loader, X } from "lucide-react";
@@ -17,6 +18,10 @@ export default function SearchPage() {
   const addSongs = async(artist_id: string) => {
     await addSongsApi({artist_id})
     navigate('/')
+  }
+
+  const removeSearch = async (search_id: string) => {
+    await removeArtistSearchFromGroup({ search_id: search_id })
   }
 
   return (
@@ -61,7 +66,13 @@ export default function SearchPage() {
               )}
             </div>
           )},
-
+          { key: "custom", label: "Actions", render: (row: Search) => (
+            <div className="flex items-center space-x-2">
+              <button 
+                className="cursor-pointer text-blue-600 hover:text-blue-800 font-semibold py-1 px-2 rounded-sm shadow transition-all text-sm" 
+                onClick={() => removeSearch(row.id)}>Remove</button>
+            </div>
+          )},
         ]}
         tableBtns={[
           <TableBtn 

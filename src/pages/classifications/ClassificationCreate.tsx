@@ -133,9 +133,6 @@ export default function ClassificationCreate() {
 
     setClassificationCriterias((prevState) => {
       const newState = [...prevState]
-
-
-
       newState.push({
         feature: feature.value,
         operation: operation.value,
