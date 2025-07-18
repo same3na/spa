@@ -1,16 +1,27 @@
 
-import { Classification, getClassifications as getClassificationsApi } from "@/api/playlists"
+import { getPlaylist } from "@/api/songs";
+import { Classification, getClassifications as getClassificationsApi, aiSyncClassifications as aiSyncClassificationsApi } from "@/api/classifications"
 import TableBtn from "@/components/table/TableBtnComponent";
 import Table from "@/components/table/TableComponent"
 import { ListMusic } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { usePlayer } from "@/context/PlayerContext";
 
 export default function Classifications() {
-  const navigate = useNavigate();
+  const { setSong, setPlaylist } = usePlayer();
+  
  
   const fetchClassifications = async (_page: number, _search: string, _limit: number) => {
     const data = await getClassificationsApi()
     return { data: data, total: 10 };
+  }
+
+  const playRandomSongs = async (classification: Classification) => {
+    // first get playlist then play the first song
+    const data = await getPlaylist({ in_song_ids: classification.songs })
+    setPlaylist(data)
+    if (data.length > 0) {
+      setSong(data[0])
+    }
   }
 
   return (
@@ -18,12 +29,12 @@ export default function Classifications() {
       <Table<Classification>
         columns={[
           { key: "id", label: "ID" },
-          { key: "custom", label: "Name", render: (row: Classification) => (
-            <div className="cursor-pointer" onClick={() => {navigate(`/song-criterias/${row.id}`)}}>{row.slug}</div>
-          )},
+          { key: "name", label: "Name"},
+          { key: "description", label: "Description"},
+
           { key: "custom", label: "Action", render: (_row: Classification) => (
             <button 
-              // onClick={(e) => navigate(`/classifications/${playlist.id}/playlist/create`)} 
+              onClick={() => playRandomSongs(_row)} 
               className="px-3 py-1 text-xsm rounded cursor-pointer mx-2 transition-all hover:bg-gray-600"
             >
               <ListMusic />
@@ -33,9 +44,9 @@ export default function Classifications() {
         fetchData={fetchClassifications}
         tableBtns={[
           <TableBtn
-            label="Create Classification"
+            label="Ai Generate Classifications"
             btnClass="bg-blue-600 hover:bg-blue-700 "
-            onButtonClick={() => navigate("/classification/create")}
+            onButtonClick={() => aiSyncClassificationsApi()}
           />
         ]}
       />

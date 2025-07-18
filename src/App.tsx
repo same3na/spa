@@ -17,7 +17,6 @@ import SongSingle from './pages/songs/Single'
 import PlaylistCreate from './pages/playlists/PlaylistCreate'
 import Playlists from './pages/playlists/Playlists'
 import Classifications from './pages/classifications/Classifications'
-import ClassificationCreate from './pages/classifications/ClassificationCreate'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Login from './pages/auth/Login'
 import ErrorMessage from './components/ErrorMessage'
@@ -66,7 +65,6 @@ function App() {
                   <Route path="/playlists" element={<PrivateRoute><Playlists/></PrivateRoute>} />
                   <Route path="/playlist/create" element={<PrivateRoute><PlaylistCreate/></PrivateRoute>} />
                   <Route path="/classifications" element={<PrivateRoute><Classifications/></PrivateRoute>} />
-                  <Route path="/classification/create" element={<PrivateRoute><ClassificationCreate/></PrivateRoute>} />
                   <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
               </div>
