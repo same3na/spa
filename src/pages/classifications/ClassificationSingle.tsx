@@ -51,6 +51,19 @@ export default function ClassificationSingle() {
         <p className="text-gray-300 max-w-4xl">
           {classification?.classification.description || "No description available."}
         </p>
+
+        {/* AI Generated badge */}
+        <div className="mt-3">
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-semibold 
+              ${classification?.classification.is_ai_generated
+                ? 'bg-purple-600 text-purple-100'
+                : 'bg-gray-700 text-gray-300'
+              }`}
+          >
+            {classification?.classification.is_ai_generated ? "AI Generated" : "Custom"}
+          </span>
+        </div>
       </header>
 
       {/* Chart */}
