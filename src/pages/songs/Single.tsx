@@ -20,7 +20,6 @@ export default function SongSingle() {
   const [song, setSong] = useState<SongSingleModel | null>(null)
   const [isLikedSong, setIsLikedSong] = useState<boolean>(false)
 
-
   const COLORS = [
     '#FF6347', // Tomato
     '#FFD700', // Gold
