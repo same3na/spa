@@ -5,10 +5,13 @@ import TableBtn from "@/components/table/TableBtnComponent";
 import Table from "@/components/table/TableComponent"
 import { ListMusic } from "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function Classifications() {
   const { setSong, setPlaylist } = usePlayer();
   
+  const navigate = useNavigate();
  
   const fetchClassifications = async (_page: number, _search: string, _limit: number) => {
     const data = await getClassificationsApi()
@@ -24,12 +27,20 @@ export default function Classifications() {
     }
   }
 
+  const onAiSyncClassificationBtn = async () => {
+    await aiSyncClassificationsApi()
+    fetchClassifications(1, "", 10)
+    toast.success("Group songs are classified by AI")
+  }
+
   return (
     <div>
       <Table<Classification>
         columns={[
           { key: "id", label: "ID" },
-          { key: "name", label: "Name"},
+          { key: "custom", label: "Name", render: (_row: Classification) => (
+            <div className="cursor-pointer" onClick={() => {navigate(`/classifications/${_row.id}`)}}>{_row.name}</div>
+          )},          
           { key: "description", label: "Description"},
 
           { key: "custom", label: "Action", render: (_row: Classification) => (
@@ -39,14 +50,14 @@ export default function Classifications() {
             >
               <ListMusic />
             </button>
-            )}
+          )}
         ]}
         fetchData={fetchClassifications}
         tableBtns={[
           <TableBtn
             label="Ai Generate Classifications"
             btnClass="bg-blue-600 hover:bg-blue-700 "
-            onButtonClick={() => aiSyncClassificationsApi()}
+            onButtonClick={() => onAiSyncClassificationBtn()}
           />
         ]}
       />

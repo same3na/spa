@@ -22,6 +22,7 @@ import Login from './pages/auth/Login'
 import ErrorMessage from './components/ErrorMessage'
 import Groups from './pages/groups/Groups'
 import { FormProvider } from './context/FormContext'
+import ClassificationSingle from './pages/classifications/ClassificationSingle'
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, hasGroupId } = useAuth();
@@ -65,6 +66,7 @@ function App() {
                   <Route path="/playlists" element={<PrivateRoute><Playlists/></PrivateRoute>} />
                   <Route path="/playlist/create" element={<PrivateRoute><PlaylistCreate/></PrivateRoute>} />
                   <Route path="/classifications" element={<PrivateRoute><Classifications/></PrivateRoute>} />
+                  <Route path="/classifications/:id" element={<PrivateRoute><ClassificationSingle/></PrivateRoute>} />
                   <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
               </div>
