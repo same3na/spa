@@ -1,26 +1,18 @@
-import { getPlaylist, getSongs, Song } from "@/api/songs";
-import FilterSongsComponent, { SongsFilter } from "@/components/FilterSongsComponent";
-import Table from "@/components/table/TableComponent";
+import { getPlaylist, Song } from "@/api/songs";
+import { SongsFilter } from "@/components/FilterSongsComponent";
 import { usePlayer } from "@/context/PlayerContext";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TableBtn from "@/components/table/TableBtnComponent";
-import ModalComponent from "@/components/ModalComponent";
+import SongTableComponent from "@/components/table/SongTableComponent";
 
 
 export default function Home() {
   const { setSong, setPlaylist } = usePlayer();
   const [songsFilter, setSongsFilter] = useState<SongsFilter | null>(null)
-  const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false)
 
   const navigate = useNavigate();
   
-  const fetchSongs = useCallback(async (page: number, search: string, limit: number) => {
-
-    const data:any = await getSongs({page, limit, search, artistIds: songsFilter?.artists, featureFilter: songsFilter?.criterias})
-
-    return { data: data.data, total: data.total };
-  }, [songsFilter]);
 
   const fetchPlaylist = async(song_id?: string) => {
     const data = await getPlaylist({ song_id, artist_ids: songsFilter?.artists, feature_filter: songsFilter?.criterias })
@@ -30,11 +22,6 @@ export default function Home() {
   const onPlaySongClick = async(song:Song) => {
     setSong(song)
     fetchPlaylist(song.id)
-  }
-
-  const onFilterChange = (filters:SongsFilter) => {
-    setSongsFilter(filters)
-    setFilterModalOpen(false)
   }
 
   const playRandomSongs = async () => {
@@ -48,16 +35,7 @@ export default function Home() {
 
   return (
     <div className="">
-      <ModalComponent 
-        isOpen={filterModalOpen} 
-        onClose={() => setFilterModalOpen(false)} 
-        contents={
-          <FilterSongsComponent 
-            onSaveFilter={onFilterChange} 
-            onCancelFilter={() => setFilterModalOpen(false)}          
-          />
-        } />
-      <Table<Song>
+      <SongTableComponent
         columns={[
           { key: "id", label: "ID" },
           { key: "custom", label: "Title", render: (row: Song) => (
@@ -84,19 +62,14 @@ export default function Home() {
             >Play</button>
           )}
         ]}
-        fetchData={fetchSongs}
         tableBtns={[
           <TableBtn 
             label={"Play Random"} 
             btnClass={"bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow"} 
             onButtonClick={() => playRandomSongs()} />,
 
-          <TableBtn 
-            label={"Filter"} 
-            btnClass={"bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow"} 
-            onButtonClick={() => setFilterModalOpen(true)} />
-
         ]}
+        onFilterChange={setSongsFilter}
       />
     </div>
   );
