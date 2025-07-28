@@ -19,6 +19,7 @@ import {
 import SongTableComponent from "@/components/table/SongTableComponent";
 import { usePlayer } from "@/context/PlayerContext";
 import TableBtn from "@/components/table/TableBtnComponent";
+import { SongsFilter } from "@/components/FilterSongsComponent";
 
 export default function ClassificationSingle() {
   const { id } = useParams();
