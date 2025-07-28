@@ -2,13 +2,13 @@ import { RefreshCw } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import MyInputComponent from "../form/MyInputComponent";
 
-interface Column<T> {
+export interface Column<T> {
   key: keyof T | "custom"; // Field in row data or a custom column
   label: string; // Column header
   render?: (row: T) => React.ReactNode; // Custom render logic for "custom" columns
 }
 
-interface TableComponentProps<T> {
+export interface TableComponentProps<T> {
   columns: Column<T>[];
   fetchData: (
     page: number, 

@@ -1,4 +1,5 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { getPlaylist, Song } from "@/api/songs";
 import {
   ClassificationDetail,
   getClassificationDetail as getClassificationDetailApi
@@ -15,11 +16,18 @@ import {
   ReferenceLine,
   ResponsiveContainer,
 } from 'recharts';
+import SongTableComponent from "@/components/table/SongTableComponent";
+import { usePlayer } from "@/context/PlayerContext";
+import TableBtn from "@/components/table/TableBtnComponent";
 
 export default function ClassificationSingle() {
   const { id } = useParams();
   const [chartData, setChartData] = useState<{ name: string; value: number }[]>([]);
   const [classification, setClassification] = useState<ClassificationDetail | null>(null);
+  const [songsFilter, setSongsFilter] = useState<SongsFilter | null>(null)
+  const { setSong, setPlaylist } = usePlayer();
+  
+  const navigate = useNavigate();
 
   if (!id) return null;
 
@@ -36,6 +44,15 @@ export default function ClassificationSingle() {
 
     setClassification(data);
   };
+
+  const playRandomSongs = async () => {
+    // first get playlist then play the first song
+    const data = await getPlaylist({ song_id: undefined, artist_ids: songsFilter?.artists, feature_filter: songsFilter?.criterias, in_song_ids: classification?.classification.songs });
+    setPlaylist(data)
+    if (data.length > 0) {
+      setSong(data[0])
+    }
+  }
 
   useEffect(() => {
     getDetails();
@@ -110,6 +127,36 @@ export default function ClassificationSingle() {
         ) : (
           <p className="text-gray-400">No artists found.</p>
         )}
+      </section>
+
+      {/* Songs */}
+      <section className="bg-gray-800 rounded-lg p-8 shadow-lg w-full mt-12">
+        <SongTableComponent
+          songIds={classification?.classification.songs}
+          columns={[
+            { key: "id", label: "ID" },
+            { key: "custom", label: "Title", render: (row: Song) => (
+              <div className="cursor-pointer" onClick={() => {navigate(`/songs/${row.id}`)}}>{row.title}</div>
+            )},
+            { key: "custom", label: "Artist Name", render: (row: Song) => (
+              <span>{row.artist.name}</span>
+            )},
+            { key: "album_name", label: "Album Name" },
+            { key: "custom", label: "Satus" , render: (row: Song) => (
+              <span 
+                className={"inline-flex items-center rounded-md text-xs font-medium ring-1 ring-inset p-1 " + (row.analyze_success.bool  === true ? "bg-green-50 text-green-700 ring-green-600/20" : row.analyze_success.valid === null ? "bg-blue-50 text-blue-700 ring-blue-700/10" : "bg-red-50 text-red-700 ring-red-600/10")}>
+                  {row.analyze_success.bool  === true ? "Success" : row.analyze_success.valid  === false ? "Pending" : "Failed"}
+              </span>
+            )},
+          ]}
+          onFilterChange={setSongsFilter}
+          tableBtns={[
+            <TableBtn 
+              label={"Play Random"} 
+              btnClass={"bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow"} 
+              onButtonClick={() => playRandomSongs()} />,
+          ]}
+        />
       </section>
     </div>
   );
