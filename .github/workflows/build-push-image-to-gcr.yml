@@ -55,19 +55,19 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           labels: ${{ steps.meta.outputs.labels }}
       
-      - name: Set deployment payload
-        id: set-payload
-        run: |
-          if [ "${GITHUB_REF_NAME}" == "staging" ]; then
-            echo "payload={\"set_values\":\"appContainersImageTags.frontend-staging=${IMAGE_TAG}\"}" >> $GITHUB_OUTPUT
-          elif [ "${GITHUB_REF_NAME}" == "release" ]; then
-            echo "payload={\"set_values\":\"appContainersImageTags.frontend=${IMAGE_TAG}\"}" >> $GITHUB_OUTPUT
-          fi
+      # - name: Set deployment payload
+      #   id: set-payload
+      #   run: |
+      #     if [ "${GITHUB_REF_NAME}" == "staging" ]; then
+      #       echo "payload={\"set_values\":\"appContainersImageTags.frontend-staging=${IMAGE_TAG}\"}" >> $GITHUB_OUTPUT
+      #     elif [ "${GITHUB_REF_NAME}" == "release" ]; then
+      #       echo "payload={\"set_values\":\"appContainersImageTags.frontend=${IMAGE_TAG}\"}" >> $GITHUB_OUTPUT
+      #     fi
 
-      - name: Trigger deployment workflow in another repo
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.PAT }}
-          repository: same3na/helm
-          event-type: custom-trigger
-          client-payload: ${{ steps.set-payload.outputs.payload }}
+      # - name: Trigger deployment workflow in another repo
+      #   uses: peter-evans/repository-dispatch@v3
+      #   with:
+      #     token: ${{ secrets.PAT }}
+      #     repository: same3na/helm
+      #     event-type: custom-trigger
+      #     client-payload: ${{ steps.set-payload.outputs.payload }}
