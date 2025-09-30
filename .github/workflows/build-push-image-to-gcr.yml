@@ -60,11 +60,12 @@ jobs:
         with:
           token: ${{ secrets.PAT }}   # PAT with access to infra repo
           repository: same3na/ansible           # replace with your infra repo
-          workflow: update-image-tag.yml             # name of the workflow in infra repo
-          ref: main                                 # branch of infra repo to run the workflow on
-          inputs: |
-            project_name: frontend                   # project to update
-            image_tag: ${{ env.IMAGE_TAG }}         # tag from Docker build
+          event-type: update-image-tag             # name of the workflow in infra repo
+          client-payload: |
+            {
+              "project_name": "frontend",
+              "image_tag": "${{ env.IMAGE_TAG }}"
+            }
       
       # - name: Set deployment payload
       #   id: set-payload
