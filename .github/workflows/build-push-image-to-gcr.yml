@@ -56,7 +56,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Trigger infra repo workflow
-        uses: peter-evans/workflow-dispatch@v3
+        uses: peter-evans/workflow-dispatch@v1
         with:
           token: ${{ secrets.PAT }}   # PAT with access to infra repo
           repository: same3na/ansible           # replace with your infra repo
