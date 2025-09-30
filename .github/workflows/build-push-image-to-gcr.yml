@@ -56,16 +56,15 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Trigger infra repo workflow
-        uses: peter-evans/repository-dispatch@v3
+        uses: peter-evans/workflow-dispatch@v3
         with:
           token: ${{ secrets.PAT }}   # PAT with access to infra repo
           repository: same3na/ansible           # replace with your infra repo
-          event-type: update-image-tag             # name of the workflow in infra repo
-          client-payload: |
-            {
-              "project_name": "frontend",
-              "image_tag": "${{ env.IMAGE_TAG }}"
-            }
+          workflow: update-image-tag.yml             # name of the workflow in infra repo
+          ref: main
+          inputs:
+            project_name: frontend
+            image_tag: ${{ env.IMAGE_TAG }}
       
       # - name: Set deployment payload
       #   id: set-payload
