@@ -54,6 +54,17 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.BRANCH_NAME }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Trigger infra repo workflow
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.PAT }}   # PAT with access to infra repo
+          repository: same3na/ansible           # replace with your infra repo
+          workflow: update-image-tag.yml             # name of the workflow in infra repo
+          ref: main                                 # branch of infra repo to run the workflow on
+          inputs: |
+            project_name: frontend                   # project to update
+            image_tag: ${{ env.IMAGE_TAG }}         # tag from Docker build
       
       # - name: Set deployment payload
       #   id: set-payload
