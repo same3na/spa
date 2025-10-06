@@ -11,9 +11,10 @@ export interface Classification {
   is_ai_generated: boolean
 }
 
-interface ArtistSongsNumber {
+export interface ArtistSongsNumber {
   artist: Artist
   total: number
+  song_ids: string[]
 }
 
 export interface ClassificationDetail {

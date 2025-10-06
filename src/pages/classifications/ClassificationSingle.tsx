@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { getPlaylist, Song } from "@/api/songs";
 import {
+  ArtistSongsNumber,
   ClassificationDetail,
   getClassificationDetail as getClassificationDetailApi
 } from "@/api/classifications";
@@ -49,6 +50,16 @@ export default function ClassificationSingle() {
   const playRandomSongs = async () => {
     // first get playlist then play the first song
     const data = await getPlaylist({ song_id: undefined, artist_ids: songsFilter?.artists, feature_filter: songsFilter?.criterias, in_song_ids: classification?.classification.songs });
+    setPlaylist(data)
+    if (data.length > 0) {
+      setSong(data[0])
+    }
+  }
+
+  const playArtistSongs = async (artist:ArtistSongsNumber) => {
+    console.log(artist);
+    // first get playlist then play the first song
+    const data = await getPlaylist({ in_song_ids: artist.song_ids });
     setPlaylist(data)
     if (data.length > 0) {
       setSong(data[0])
@@ -117,8 +128,9 @@ export default function ClassificationSingle() {
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {classification.artists.map((artist) => (
               <li
+                onClick={() => playArtistSongs(artist)}
                 key={artist.artist.id}
-                className="flex justify-between items-center px-4 py-3 bg-gray-700 rounded hover:bg-gray-600"
+                className="flex justify-between items-center px-4 py-3 bg-gray-700 rounded hover:bg-gray-600 cursor-pointer"
               >
                 <span className="font-medium">{artist.artist.name}</span>
                 <span className="text-sm text-gray-300">{artist.total}</span>

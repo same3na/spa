@@ -55,7 +55,7 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Trigger infra repo workflow
+      - name: Update the image tag
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.PAT }}
@@ -66,19 +66,15 @@ jobs:
               "project_name": "frontend",
               "image_tag": "${{ env.IMAGE_TAG }}"
             }      
-      # - name: Set deployment payload
-      #   id: set-payload
-      #   run: |
-      #     if [ "${GITHUB_REF_NAME}" == "staging" ]; then
-      #       echo "payload={\"set_values\":\"appContainersImageTags.frontend-staging=${IMAGE_TAG}\"}" >> $GITHUB_OUTPUT
-      #     elif [ "${GITHUB_REF_NAME}" == "release" ]; then
-      #       echo "payload={\"set_values\":\"appContainersImageTags.frontend=${IMAGE_TAG}\"}" >> $GITHUB_OUTPUT
-      #     fi
 
-      # - name: Trigger deployment workflow in another repo
-      #   uses: peter-evans/repository-dispatch@v3
-      #   with:
-      #     token: ${{ secrets.PAT }}
-      #     repository: same3na/helm
-      #     event-type: custom-trigger
-      #     client-payload: ${{ steps.set-payload.outputs.payload }}
+      - name: Run Playbook
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.PAT }}
+          repository: same3na/ansible
+          event-type: cache-ansible
+          client-payload: |
+            {
+              "role_tag": "sites"
+            }      
+
