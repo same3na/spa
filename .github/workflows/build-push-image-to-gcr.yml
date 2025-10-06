@@ -72,7 +72,7 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           repository: same3na/ansible
-          event-type: cache-ansible
+          event-type: playbook-run
           client-payload: |
             {
               "role_tag": "sites"
