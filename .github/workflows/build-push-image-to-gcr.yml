@@ -55,26 +55,14 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Update the image tag
+      - name: deploy
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.PAT }}
           repository: same3na/ansible
-          event-type: update-image-tag
+          event-type: deploy
           client-payload: |
             {
               "project_name": "frontend",
               "image_tag": "${{ env.IMAGE_TAG }}"
             }      
-
-      - name: Run Playbook
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.PAT }}
-          repository: same3na/ansible
-          event-type: playbook-run
-          client-payload: |
-            {
-              "role_tag": "sites"
-            }      
-
