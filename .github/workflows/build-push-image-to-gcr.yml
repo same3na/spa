@@ -55,6 +55,7 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      # deploy 
       - name: deploy
         uses: peter-evans/repository-dispatch@v3
         with:
