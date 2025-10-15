@@ -34,19 +34,17 @@ export interface SongFilters {
 
 export interface SongSingle extends Song{
   features: {
-    genre: {
-      name: string
-      value: number
-    }[],
-    aggressive: number,
-    engagement: number,
-    happy: number,
-    relaxed: number,
-    sad: number,
-    mood: {
-      name: string
-      value: number
-    }[],
+    acousticness: number
+    danceability: number
+    energy: number
+    instrumentalness: number
+    liveness: number
+    loudness: number
+    speechiness: number
+    valence: number
+    tempo: number
+    key: number
+    mode: number
   }
 }
 

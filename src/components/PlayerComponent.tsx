@@ -165,7 +165,17 @@ const Player = () => {
 
   
           {/* Audio Element */}
-          <YouTube 
+          <div className="p-4">
+            <iframe
+              src={song.external_url.replace("open.spotify.com", "open.spotify.com/embed") + "?autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0"}
+              width="100%"
+              height="152"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+              title="Spotify Player"
+            ></iframe>
+          </div>
+          {/* <YouTube 
             className="hidden"
             videoId={extractVideoId(song)} 
             opts={opts} 
@@ -173,7 +183,7 @@ const Player = () => {
             onEnd={onEnd} 
             onStateChange={onStateChange}
             onPlay={onPlay}
-          />
+          /> */}
         </div>
       )}
     </div>

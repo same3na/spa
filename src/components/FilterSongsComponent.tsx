@@ -17,32 +17,36 @@ interface FilterSongsComponentProps {
 export default function FilterSongsComponent({onSaveFilter, onCancelFilter}:FilterSongsComponentProps) {
   const featureOptions = [
     {
-      value: "mood",
-      label: "Mood"
+      value: "acousticness",
+      label: "Acousticness"
     },
     {
-      value: "genre",
-      label: "Genre"
+      value: "danceability",
+      label: "Danceability"
     },
     {
-      value: "aggressive",
-      label: "Aggressive"
+      value: "energy",
+      label: "Energy"
     },
     {
-      value: "engagement",
-      label: "Engagement"
+      value: "instrumentalness",
+      label: "Instrumentalness"
     },
     {
-      value: "happy",
-      label: "Happy"
+      value: "liveness",
+      label: "Liveness"
     },
     {
-      value: "relaxed",
-      label: "Relaxed"
+      value: "loudness",
+      label: "Loudness"
     },
     {
-      value: "sad",
-      label: "Sad"
+      value: "tempo",
+      label: "Tempo"
+    },
+    {
+      value: "valence",
+      label: "Valence"
     }
   ]
 
@@ -77,33 +81,11 @@ export default function FilterSongsComponent({onSaveFilter, onCancelFilter}:Filt
   }
 
   const setFeatureOperations = () => {
-    let operations = []
-    if (feature && (feature.value == "mood" || feature.value == "genre") ) {
-      operations = [
-        { value: 'in', label: 'In' },
-        { value: 'notin', label: 'Not In' },
-      ]
-    } else {
-      operations = [
-        { value: '<', label: 'Less Then' },
-        { value: '>', label: 'Greater Then' },
-      ]
-    }
+    const operations = [
+      { value: '<', label: 'Less Then' },
+      { value: '>', label: 'Greater Then' },
+    ]
     setOperationOptions(operations)
-  }
-
-  const setFeatureValues = () => {
-    if (!feature) return;
-    if (!["mood", "genre"].includes(feature.value)) return;
-
-    let valueOptions = []
-    if (feature.value == "mood") {
-      valueOptions = songsFilters.moods
-    } else {
-      valueOptions = songsFilters.genres
-    }
-
-    setFeatureValueOpts(valueOptions)
   }
 
   const onAddCriteria = () => {
@@ -154,7 +136,6 @@ export default function FilterSongsComponent({onSaveFilter, onCancelFilter}:Filt
     setOperation(null)
     setFeatureValue(null)
     setFeatureOperations()
-    setFeatureValues()
     getArtists()
   }, [feature])
 

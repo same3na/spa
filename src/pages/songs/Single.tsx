@@ -4,9 +4,6 @@ import { getSingleSong, SongSingle as SongSingleModel } from "@/api/songs";
 import { LikeSong, DislikeSong, isLikedSong as isLikedSongApi} from "@/api/user";
 import { useEffect, useCallback, useState } from "react";
 
-import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from 'recharts';
-
-import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Star } from "lucide-react";
 
@@ -16,23 +13,18 @@ export default function SongSingle() {
   if (!id) {
     return
   }
-
+  const keyNames = ['C', 'C♯/D♭', 'D', 'D♯/E♭', 'E', 'F', 'F♯/G♭', 'G', 'G♯/A♭', 'A', 'A♯/B♭', 'B'];
   const [song, setSong] = useState<SongSingleModel | null>(null)
   const [isLikedSong, setIsLikedSong] = useState<boolean>(false)
+  const [musicalKey, setMusicalKey] = useState<string | null>(null)
+  const [mode, setMode] = useState<string | null>(null)
 
-  const COLORS = [
-    '#FF6347', // Tomato
-    '#FFD700', // Gold
-    '#32CD32', // Lime Green
-    '#1E90FF', // Dodger Blue
-    '#FF1493', // Deep Pink
-    '#DA70D6', // Orchid
-    '#FF4500', // Orange Red
-    '#00FF7F', // Spring Green
-  ];
   const getSong = useCallback(async(id:string) => {
     const data: SongSingleModel = await getSingleSong(id)
     setSong(data)
+
+    setMusicalKey(data.features.key !== null ? keyNames[data.features.key] : null)
+    setMode(data.features.mode === 1 ? "Major" : data.features.mode === 0 ? "Minor" : null)
   }, [id])
 
   const getIsSongLiked = async(id:string) => {
@@ -50,6 +42,7 @@ export default function SongSingle() {
     } else {
       await LikeSong({song_id:song.id})
     }
+    
 
     await getIsSongLiked(song.id)
   }
@@ -101,108 +94,19 @@ export default function SongSingle() {
 
       {song && (
         <div className="grid grid-cols-3 gap-4">
-          <div>
-            <h2 className="text-center text-white text-2xl font-semibold">Top 5 Music Genres</h2>
-            <ResponsiveContainer width="100%" height={400}>
-              <PieChart>
-                <Pie
-                  data={song.features.genre}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"  // Centering the pie chart
-                  cy="50%"  // Centering the pie chart
-                  outerRadius={150}  // Pie radius
-                  label={(entry) => entry.name} //
-                >
-                  {song.features.genre.map((_entry:any, index:any) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="text-center">
-            <h2 className="text-center text-white text-2xl font-semibold pb-10">Aggressive</h2>
-            
-            <div className="max-w-xs max-h-xs mx-auto">
-              <CircularProgressbar 
-                value={song.features.aggressive} // Convert to percentage
-                text={`${(song.features.aggressive).toFixed(0)}%`} // Display percentage in the middle
-                strokeWidth={10} // Width of the progress circle
-              />
-            </div>
-          </div>
-
-          <div className="text-center">
-            <h2 className="text-center text-white text-2xl font-semibold pb-10">Engagement</h2>
-            
-            <div className="max-w-xs max-h-xs mx-auto">
-              <CircularProgressbar 
-                value={song.features.engagement} // Convert to percentage
-                text={`${(song.features.engagement).toFixed(0)}%`} // Display percentage in the middle
-                strokeWidth={10} // Width of the progress circle
-              />
-            </div>
-          </div>
-
-          <div className="text-center">
-            <h2 className="text-center text-white text-2xl font-semibold pb-10">Happy</h2>
-            
-            <div className="max-w-xs max-h-xs mx-auto">
-              <CircularProgressbar 
-                value={song.features.happy} // Convert to percentage
-                text={`${(song.features.happy).toFixed(0)}%`} // Display percentage in the middle
-                strokeWidth={10} // Width of the progress circle
-              />
-            </div>
-          </div>
-
-          <div className="text-center">
-            <h2 className="text-center text-white text-2xl font-semibold pb-10">Relaxed</h2>
-            
-            <div className="max-w-xs max-h-xs mx-auto">
-              <CircularProgressbar 
-                value={song.features.relaxed} // Convert to percentage
-                text={`${(song.features.relaxed).toFixed(0)}%`} // Display percentage in the middle
-                strokeWidth={10} // Width of the progress circle
-              />
-            </div>
-          </div>
-
-          <div className="text-center">
-            <h2 className="text-center text-white text-2xl font-semibold pb-10">Sad</h2>
-            
-            <div className="max-w-xs max-h-xs mx-auto">
-              <CircularProgressbar 
-                value={song.features.sad} // Convert to percentage
-                text={`${(song.features.sad).toFixed(0)}%`} // Display percentage in the middle
-                strokeWidth={10} // Width of the progress circle
-              />
-            </div>
-          </div>
-
-          <div>
-            <h2 className="text-center text-white text-2xl font-semibold">Top 5 Music Moods</h2>
-            <ResponsiveContainer width="100%" height={400}>
-              <PieChart>
-                <Pie
-                  data={song.features.mood}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"  // Centering the pie chart
-                  cy="50%"  // Centering the pie chart
-                  outerRadius={150}  // Pie radius
-                  label={(entry) => entry.name} //
-                >
-                  {song.features.mood.map((_entry:any, index:any) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+          <div style={{ lineHeight: '1.8', fontFamily: 'monospace' }}>
+            <h3 style={{ marginBottom: '8px', fontWeight: 'bold' }}>🎧 Audio Features</h3>
+            <div>Acousticness: {song.features.acousticness}</div>
+            <div>Danceability: {song.features.danceability}</div>
+            <div>Energy: {song.features.energy}</div>
+            <div>Instrumentalness: {song.features.instrumentalness}</div>
+            <div>Liveness: {song.features.liveness}</div>
+            <div>Speechiness: {song.features.speechiness}</div>
+            <div>Valence: {song.features.valence}</div>
+            <div>Tempo (BPM): {song.features.tempo}</div>
+            <div>Key: {musicalKey}</div>
+            <div>Mode: {mode}</div>
+            <div>Loudness: {song.features.loudness} dB</div>
           </div>
         </div>
       )}
